@@ -1,0 +1,418 @@
+﻿@using System.Security.Claims
+@using Microsoft.AspNetCore.Http.Extensions
+@inject IHttpContextAccessor _httpContextAccessor
+
+@{
+	var memberId = Context.Request.Cookies["UserID"];
+	var memberName = Context.Request.Cookies["UserName"];
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+@await RenderSectionAsync("Styles", required: false)
+<head>
+    <meta charset="utf-8" />
+@*     <meta name="viewport" content="width=device-width, initial-scale=1.0" /> *@
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@ViewData["Title"] - MyProject</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MyProject.styles.css" asp-append-version="true" />
+	
+	<link href="~/lib/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Rokkitt:100,300,400,700" rel="stylesheet">
+    <!-- Animate.css -->
+	<link href="~/css/animate.css" rel="stylesheet" />
+    <!-- Icomoon Icon Fonts-->
+	<link href="~/css/icomoon.css" rel="stylesheet" />
+    <!-- Ion Icon Fonts-->
+    <link href="~/css/ionicons.min.css" rel="stylesheet" />
+    <!-- Bootstrap  -->
+	<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Magnific Popup -->
+	<link href="~/css/magnific-popup.css" rel="stylesheet" />
+
+    <!-- Flexslider  -->
+	<link href="~/css/flexslider.css" rel="stylesheet" />
+
+    <!-- Owl Carousel -->
+	<link href="~/css/owl.carousel.min.css" rel="stylesheet" />
+	<link href="~/css/owl.theme.default.min.css" rel="stylesheet" />
+
+    <!-- Date Picker -->
+	<link href="~/css/bootstrap-datepicker.css" rel="stylesheet" />
+    <!-- Flaticons  -->
+	<link href="~/fonts/flaticon/font/flaticon.css" rel="stylesheet" />
+
+    <!-- Theme style  -->
+	<link href="~/css/style.css" rel="stylesheet" />
+
+</head>
+<body>
+@*     <header> *@
+		<div class="colorlib-loader"></div>
+
+		<div id="page">
+			<nav class="colorlib-nav" role="navigation">
+				<div class="top-menu">
+					<div class="container">
+						<div class="row ">
+
+							<div class="col-sm-7 col-md-9">
+								<div id="colorlib-logo"><a asp-controller="Home" asp-action="Index">
+									<img src="~/images/iconLogo02.png" style="width:100px;" />
+								</a></div>
+							</div>
+
+						<div class="col-sm-5 col-md-3 justify-content-end" style="">
+							<div class="text-right " style="padding-left:220px">
+								@if (User.Identity != null && User.Identity.IsAuthenticated)
+								{
+									<ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4 " style="width:25px;">
+										<li class="nav-item dropdown">
+											<a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><svg class="svg-inline--fa fa-user fa-fw" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"></path></svg><!-- <i class="fas fa-user fa-fw"></i> Font Awesome fontawesome.com --></a>
+											<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+												<li><a class="dropdown-item">嗨！@_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name)</a></li>
+												<li><a class="dropdown-item" href="#!">設定</a></li>
+												<li><hr class="dropdown-divider"></li>
+												<li><a class="dropdown-item" href="#!" id="logout">登出</a></li>
+											</ul>
+										</li>
+									</ul>
+								}
+								else
+								{
+									<ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4 " style="width:25px;">
+										<li class="nav-item dropdown">
+											<a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><svg class="svg-inline--fa fa-user fa-fw" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"></path></svg><!-- <i class="fas fa-user fa-fw"></i> Font Awesome fontawesome.com --></a>
+											<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+												<li><a class="dropdown-item" asp-controller="Member" asp-action="Login">登入</a></li>
+												<li><a class="dropdown-item" href="#!">設定</a></li>
+												@* <li><hr class="dropdown-divider"></li> *@
+												@* <li><a class="dropdown-item" href="#!" id="logout">登出</a></li> *@
+												@* <li><a class="dropdown-item" href="#!">登出</a></li> *@
+											</ul>
+										</li>
+									</ul>
+								}
+
+							</div>
+							
+								<form action="#" class="search-wrap">
+									<div class="form-group">
+										<input type="search" class="form-control search" placeholder="Search">
+									<button class="btn btn-primary submit-search text-center " style="background-color:#FFA042;border:none;" type="submit"><i class="icon-search"></i></button>
+									</div>
+								</form>
+							
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 text-left menu-1">
+								<ul>
+									<li class="active"><a href="index.cshtml">首頁</a></li>
+									<li class="has-dropdown">
+										<a href="men.cshtml">男性鞋款</a>
+										<ul class="dropdown">
+											<li><a href="product-detail.cshtml">Product Detail</a></li>
+											<li><a href="cart.html">Shopping Cart</a></li>
+											<li><a href="checkout.cshtml">Checkout</a></li>
+											<li><a href="order-complete.cshtml">Order Complete</a></li>
+											<li><a href="add-to-wishlist.cshtml">Wishlist</a></li>
+										</ul>
+									</li>
+									<li><a href="women.cshtml">女性鞋款</a></li>
+									<li><a href="about.cshtml">關於</a></li>
+									<li><a href="contact.cshtml">聯絡</a></li>
+								@if (User.Identity != null && User.Identity.IsAuthenticated)
+								{
+									<li class="cart">
+										<a asp-controller="Home" asp-action="ShoppingCart">
+											<i class="icon-shopping-cart"></i> 購物車 @* [<i style="font-style: normal;" id="cartNumber">0</i>] *@
+										</a>
+									</li>
+								}
+								else
+								{
+									<li class="cart">
+										<a asp-controller="Member"asp-action="Login">
+											<i class="icon-shopping-cart"></i> 購物車@*  [<i style="font-style: normal;" id="cartNumber">0</i>] *@
+										</a>
+									</li>
+								}
+								</ul>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+			<div class="sale" style="background-color:#FFA042; height:40px; display: flex; align-items: center;">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-8 offset-sm-2 text-center">
+							<div class="row">
+								<div class="owl-carousel2" style="display: flex; align-items: center;">
+									<div class="item">
+										<div class="col">
+											<h5 style="color:whitesmoke"><a href="#" style="color:whitesmoke">25% off 使用優惠碼: SummerSale</a></h5>
+										</div>
+									</div>
+									<div class="item">
+										<div class="col">
+											<h5 style="color:whitesmoke"><a href="#" style="color:whitesmoke">50% off 夏季鞋款！</a></h5>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
+@*     </header> *@
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+		<div class="colorlib-partner">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-8 offset-sm-2 text-center colorlib-heading colorlib-heading-sm">
+						<h2>Trusted Partners</h2>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col partner-col text-center">
+						<img src="~/images/brand-1.jpg" class="img-fluid" alt="Free html4 bootstrap 4 template">
+					</div>
+					<div class="col partner-col text-center">
+						<img src="~/images/brand-2.jpg" class="img-fluid" alt="Free html4 bootstrap 4 template">
+					</div>
+					<div class="col partner-col text-center">
+						<img src="~/images/converse_logo.png" class="img-fluid" alt="Free html4 bootstrap 4 template">
+					</div>
+					<div class="col partner-col text-center">
+						<img src="~/images/new_balance_symbol.png" class="img-fluid" alt="Free html4 bootstrap 4 template">
+					</div>
+					<div class="col partner-col text-center">
+						<img src="~/images/brand-5.jpg" class="img-fluid" alt="Free html4 bootstrap 4 template">
+					</div>
+				</div>
+			</div>
+		</div>
+
+	<footer id="colorlib-footer" role="contentinfo">
+		<div class="container">
+			<div class="row row-pb-md">
+				<div class="col footer-col colorlib-widget">
+					<h4>About Footwear</h4>
+					<p>Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life</p>
+					<p>
+						<ul class="colorlib-social-icons">
+							<li><a href="#"><i class="icon-twitter"></i></a></li>
+							<li><a href="#"><i class="icon-facebook"></i></a></li>
+							<li><a href="#"><i class="icon-linkedin"></i></a></li>
+							<li><a href="#"><i class="icon-dribbble"></i></a></li>
+						</ul>
+					</p>
+				</div>
+				<div class="col footer-col colorlib-widget">
+					<h4>Customer Care</h4>
+					<p>
+						<ul class="colorlib-footer-links">
+							<li><a href="#">Contact</a></li>
+							<li><a href="#">Returns/Exchange</a></li>
+							<li><a href="#">Gift Voucher</a></li>
+							<li><a href="#">Wishlist</a></li>
+							<li><a href="#">Special</a></li>
+							<li><a href="#">Customer Services</a></li>
+							<li><a href="#">Site maps</a></li>
+						</ul>
+					</p>
+				</div>
+				<div class="col footer-col colorlib-widget">
+					<h4>Information</h4>
+					<p>
+						<ul class="colorlib-footer-links">
+							<li><a href="#">About us</a></li>
+							<li><a href="#">Delivery Information</a></li>
+							<li><a href="#">Privacy Policy</a></li>
+							<li><a href="#">Support</a></li>
+							<li><a href="#">Order Tracking</a></li>
+						</ul>
+					</p>
+				</div>
+
+				<div class="col footer-col">
+					<h4>News</h4>
+					<ul class="colorlib-footer-links">
+						<li><a href="blog.cshtml">Blog</a></li>
+						<li><a href="#">Press</a></li>
+						<li><a href="#">Exhibitions</a></li>
+					</ul>
+				</div>
+
+				<div class="col footer-col">
+					<h4>Contact Information</h4>
+					<ul class="colorlib-footer-links">
+						<li>291 South 21th Street, <br> Suite 721 New York NY 10016</li>
+						<li><a href="tel://1234567920">+ 1235 2355 98</a></li>
+						<li><a href="mailto:info@yoursite.com">info@yoursite.com</a></li>
+						<li><a href="#">yoursite.com</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="copy">
+			<div class="row">
+				<div class="col-sm-12 text-center">
+					<p>
+						<span>
+							<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+							Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+							<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+						</span>
+						<span class="block">Demo Images: <a href="http://unsplash.co/" target="_blank">Unsplash</a> , <a href="http://pexels.com/" target="_blank">Pexels.com</a></span>
+					</p>
+				</div>
+			</div>
+		</div>
+	</footer>
+	</div>
+	<div class="gototop js-top">
+		<a href="#" class="js-gotop"><i class="ion-ios-arrow-up"></i></a>
+	</div>
+	<div id="loginModalContainer">
+
+	</div>
+
+
+	@{
+		bool isAuthenticated = User.Identity.IsAuthenticated;
+		string claimId = string.Empty;
+		string claimName = string.Empty;
+		string claimEmail = string.Empty;
+		if (isAuthenticated)
+		{
+			claimId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			claimName = User.FindFirstValue(ClaimTypes.Name);
+			claimEmail = User.FindFirstValue(ClaimTypes.Email);
+			
+		}
+	}
+	
+	<script src="~/lib/sweetalert2/sweetalert2.all.min.js"></script>
+	<script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+	<!-- jQuery -->
+	
+	<script src="~/js/jquery.min.js"></script>
+	<!-- popper -->
+	
+	<script src="~/js/popper.min.js"></script>
+	<!-- bootstrap 4.1 -->
+	
+	<script src="~/js/bootstrap.min.js"></script>
+	<!-- jQuery easing -->
+	
+	<script src="~/js/jquery.easing.1.3.js"></script>
+	<!-- Waypoints -->
+	
+	<script src="~/js/jquery.waypoints.min.js"></script>
+	<!-- Flexslider -->
+	
+	<script src="~/js/jquery.flexslider-min.js"></script>
+	<!-- Owl carousel -->
+	
+	<script src="~/js/owl.carousel.min.js"></script>
+	<!-- Magnific Popup -->
+	<script src="~/js/jquery.magnific-popup.min.js"></script>
+	<script src="~/js/magnific-popup-options.js"></script>
+	<!-- Date Picker -->
+	
+	<script src="~/js/bootstrap-datepicker.js"></script>
+	<!-- Stellar Parallax -->
+	
+	<script src="~/js/jquery.stellar.min.js"></script>
+	<!-- Main -->
+	
+	<script src="~/js/main.js"></script>
+	<script>
+		let IsClaim = false;
+		let claimId = '@claimId';
+		let claimName = '@claimName';
+		let claimEmail = '';
+		// if (Boolean("@User.Identity.IsAuthenticated")) {
+		// 	IsClaim = true;
+		// 	claimId = Number(@_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+		// 	claimName = '@Html.Raw(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name))';
+		// }
+		// else {
+		// 	IsClaim = false;
+		// }
+
+		// // 当链接被点击时触发 modal 显示
+		// $(document).ready(function () {
+		// 	$('#loginLink').click(function (e) {
+		// 		e.preventDefault();
+		// 		$.ajax({
+		// 			url: '@Url.Action("Login", "Member")',
+		// 			type: 'GET',
+		// 			success: function (data) {
+		// 				$('#loginModalContainer').html(data);
+		// 				$('#loginModal').modal('show');
+		// 			}
+		// 		});
+		// 	});
+		// });
+
+		$(document).ready(function () {
+			$('#logout').click(function (e) {
+				// e.preventDefault(); // 防止點擊連結後跳轉到 href 中指定的路徑
+				$.ajax({
+					url: '/Member/LogOut', // 將 '/YourController/LogOut' 替換為您的登出端點路徑
+					method: 'GET', // 或者 'GET'，取決於您的控制器中的設置
+					success: function (response) {
+						console.log('登出成功');
+						// 登出成功後的處理邏輯，例如重新導向到首頁
+						Swal.fire({
+							title: '登出成功',
+							text: '將自動回到首頁......',
+							icon: 'success',
+							showConfirmButton: false,
+							timer: 1500 // 設定提示框顯示時間，單位為毫秒
+						}).then(() => {
+							// 提示框顯示後立即執行的操作
+							// 跳到首頁
+							window.location.href = '@Url.Action("Index", "Home")';
+						});
+					},
+					error: function (xhr, status, error) {
+						// 登出失敗時的錯誤處理邏輯
+						console.error(error);
+					}
+				});
+			});
+		});
+
+
+
+
+
+	</script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

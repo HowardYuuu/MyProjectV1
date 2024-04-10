@@ -1,0 +1,162 @@
+﻿@* @model MyProject.Models.TProduct *@
+@using MyProject.ViewModels
+@model ProductViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+@{
+    Layout = "~/Views/Shared/_LayoutAD.cshtml";
+}
+<h1 style="margin-inline:20px;margin-bottom:0px;margin-block:5px;font-weight:900;color:#003060">編輯</h1>
+<div>
+    @* <a asp-action="Index" class="btn btn-link"><i class="bi bi-arrow-left"></i> 回管理頁面</a> *@
+    <a asp-action="Index" class="btn btn-primary" style="background-color:#003060; border:none; margin-inline:10px">回管理頁面</a>
+</div>
+@* <h4>TProduct</h4> *@
+<hr />
+
+<form id="editForm" asp-action="Edit" enctype="multipart/form-data">
+<div class="container">
+<div class="row d-flex justify-content-center">
+    <div class="col-md-4">
+            <!-- 省略其他表單字段 -->
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ProductId" />
+            <div class="form-group">
+                    <label asp-for="ProductName" class="control-label" style="font-weight:900">@Html.DisplayNameFor(model=>model.ProductName)：</label>
+                <input asp-for="ProductName" class="form-control" />
+                <span asp-validation-for="ProductName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                    <label asp-for="Brand" class="control-label" style="font-weight:900">@Html.DisplayNameFor(model=>model.Brand)：</label>
+                <select asp-for="Brand" class="form-control">
+                    <option value="Nike">Nike</option>
+                    <option value="Adidas">Adidas</option>
+                    <option value="Converse">Converse</option>
+                    <option value="New Balance">New Balance</option>
+                    <option value="Puma">Puma</option>
+                </select>
+                <span asp-validation-for="Brand" class="text-danger"></span>
+            </div>
+            <!-- FNumber 等其他字段 -->
+            <div class="form-group">
+                    <label asp-for="Number" class="control-label" style="font-weight:900">@Html.DisplayNameFor(model=>model.Number)：</label>
+                <input asp-for="Number" type="text" class="form-control" />
+                <span asp-validation-for="Number" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MainColor" class="control-label">@Html.DisplayNameFor(model=>model.MainColor)：</label>
+                <input asp-for="MainColor" class="form-control" />
+                <span asp-validation-for="MainColor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                    <label asp-for="Style" class="control-label" style="font-weight:900">@Html.DisplayNameFor(model=>model.Style)：</label>
+                <select asp-for="Style" class="form-control">
+                    <option value="運動鞋">運動鞋</option>
+                    <option value="休閒鞋">休閒鞋</option>
+                    <option value="正式鞋">正式鞋</option>
+                    <option value="涼/拖鞋">涼/拖鞋</option>
+                </select>
+                <span asp-validation-for="Style" class="text-danger"></span>
+            </div>
+            <!-- FGender 字段 -->
+            <div class="form-group d-flex" style="margin-top:5px">
+                    <label asp-for="Gender" style="font-weight:900">@Html.DisplayNameFor(model=>model.Gender)：</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" asp-for="Gender" value="男" checked>
+                    <label class="form-check-label">
+                        男鞋
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" asp-for="Gender" value="女">
+                    <label class="form-check-label">
+                        女鞋
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" asp-for="Gender" value="中性">
+                    <label class="form-check-label">
+                        中性鞋
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" asp-for="Gender" value="童">
+                    <label class="form-check-label">
+                        童鞋
+                    </label>
+                </div>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+          
+            <!-- FWidth 字段 -->
+            <div class="form-group">
+                    <label asp-for="Width" class="control-label" style="font-weight:900">@Html.DisplayNameFor(model=>model.Width)：</label>
+                <select asp-for="Width" class="form-control">
+                    <option value="D">D(正常)</option>
+                    <option value="2E">2E(寬)</option>
+                    <option value="B">B(窄)</option>
+                </select>
+                <span asp-validation-for="Width" class="text-danger"></span>
+            </div>
+            <!-- FPrice, FImgPath 字段 -->
+            <div class="form-group" >
+                    <label asp-for="Price" class="control-label" style="font-weight:900">@Html.DisplayNameFor(model=>model.Price)：</label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+          
+          
+            <div class="form-group">
+                <input type="submit" value="儲存" class="btn btn-primary" style="margin-top:5px;" />
+            </div>
+        
+    </div>
+        <div class="col-md-4">
+			<div class="form-group">
+                    <label asp-for="ImageFile" class="control-label" style="font-weight:900">@Html.DisplayNameFor(model=>model.Image)：</label>
+				@* id="inputPicture" *@@* data-asp-for="圖片檔案" *@
+				<input asp-for="ImageFile" type="file" class="form-control" onchange="previewImage(this)" accept="image/*">
+				@* <input type="hidden" asp-for="圖片" class="picture form-control" /> *@
+				<img id="imgPreview" src="~/images//Products/@Model.Image" alt="Preview" style="display: block; margin: 10px auto; max-width: 400px; max-height: 400px;" />
+				<span asp-validation-for="ImageFile" class="text-danger"></span>
+			</div>
+    </div>
+</div>
+</div>
+</form>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+@*     <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
+    <script>
+
+
+
+        function previewImage(input) {
+            // 確保至少選擇了一個文件
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                var fileName = input.files[0].name;
+                // 將圖片檔名設置到另一個輸入框
+                $('.picture').val(fileName);
+
+                reader.onload = function (e) {
+                    var imgPreview = document.getElementById('imgPreview');
+                    // 設置圖片路徑到另一個 input
+                   
+
+                    imgPreview.src = e.target.result;
+                    imgPreview.style.display = 'block';
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+
+    </script>
+}

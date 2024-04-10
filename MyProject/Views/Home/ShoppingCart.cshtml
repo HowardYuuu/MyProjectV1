@@ -1,0 +1,308 @@
+﻿@using MyProject.ViewModels
+@model CartViewModel
+
+@{
+	ViewData["Title"] = "Cart Page";
+}
+@section Styles{
+
+}
+
+
+
+
+
+
+<div class="colorlib-product">
+	<div class="container">
+		<div class="row row-pb-lg">
+			<div class="col-md-10 offset-md-1">
+				<div class="process-wrap">
+					<div class="process text-center active">
+						<p><span>01</span></p>
+						<h3>購物車</h3>
+					</div>
+					<div class="process text-center">
+						<p><span>02</span></p>
+						<h3>結帳資訊</h3>
+					</div>
+					<div class="process text-center">
+						<p><span>03</span></p>
+						<h3>訂單完成</h3>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row " id="productCart" style="padding-bottom:10px">
+			<div class="col-md-12" id="shoppingCart">
+				<div class="product-name d-flex">
+					<div class="one-forth text-left px-4">
+						<span>商品名稱</span>
+					</div>
+					<div class="one-eight text-center">
+						<span>尺寸</span>
+					</div>
+					<div class="one-eight text-center">
+						<span>單價</span>
+					</div>
+					<div class="one-eight text-center">
+						<span>數量</span>
+					</div>
+					<div class="one-eight text-center">
+						<span>總金額</span>
+					</div>
+					<div class="one-eight text-center px-4">
+						<span>移除</span>
+					</div>
+				</div>
+				@foreach (var item in Model.ShoppingCarts)
+				{
+					<div class="product-cart d-flex">
+						<div class="one-forth" style="">
+							@* <div class="product-img" style="background-image: url(images/NoImage.png);">
+						</div> *@
+							<img src="~/images/products/@Model.Products.FirstOrDefault(x=>x.FProductId == item.FProductId).FImgPath" style="width:150px" />
+							<div class="display-tc" style="">
+								<h3>@Model.Products.FirstOrDefault(x=>x.FProductId == item.FProductId).FProductName</h3>
+							</div>
+						</div>
+						<div class="one-eight text-center">
+							<div class="display-tc">
+								<span class="price">@item.FSize</span>
+							</div>
+						</div>
+						<div class="one-eight text-center">
+							<div class="display-tc">
+								<span class="price" >@Convert.ToInt32(item.FUnitPrice)</span>
+							</div>
+						</div>
+						<div class="one-eight text-center">
+							@* <div class="display-tc">
+						<input type="text" id="quantity" name="quantity" class="form-control input-number text-center" value="1" min="1" max="100">
+						</div> *@
+							<div class="display-tc">
+								<div class="input-group d-flex justify-content-center">
+									<button type="button" class="btn btn-outline-secondary" onclick="increaseQuantity('@item.FSize _@item.FProductId')">+</button>
+								</div>
+								<input type="text" id="quantity_@item.FSize _@item.FProductId" name="quantity" class="form-control input-number text-center" value="@item.FQuantity" min="1" max="100" readonly style="">
+								<div class="input-group d-flex justify-content-center ">
+									<button type="button" class="btn btn-outline-secondary" onclick="decreaseQuantity('@item.FSize _@item.FProductId')" style="margin-top:5px">-</button>
+								</div>
+							</div>
+						</div>
+						<div class="one-eight text-center">
+							<div class="display-tc">
+								<span class="price" id="subtotal_@item.FSize">@Convert.ToInt32(item.FSubtotal)</span>
+							</div>
+						</div>
+						<div class="one-eight text-center">
+							<div class="display-tc">
+								<a href="#" class="closed" onclick="removeItem('@item.FSize')"></a>
+							</div>
+						</div>
+					</div>
+				}
+
+
+			</div>
+		</div>
+	</div>
+	<div class="row row-pb-lg" style="margin-top:10px">
+		<div class="col-md-8">
+			<div class="total-wrap">
+				<div class="row">
+					<div class="col-sm-12 text-start">
+						<div class="total">
+							<div class="sub">
+								@* <p><span>小計:</span> <span>$200.00</span></p> *@
+								<p><span>運費:</span> <span>$0.00</span></p>
+								<p><span>折扣:</span> <span>$0.00</span></p>
+							</div>
+							<div class="grand-total">
+								<p><span><strong>總金額:</strong></span> <span id="totalAmount"></span></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-4">
+			<div class="row">
+				<div class="col-sm-12">
+					<form action="#">
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<select class="form-select" aria-label="Default select example" id="selectPayment">
+									<option selected value="Amount">取貨付款</option>
+									<option value="Linepay">LinePay</option>
+								</select>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="col-sm-12">
+					<input type="submit" value="前往結帳" class="btn btn-primary btn-block">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	@* <div class="row">
+	<div class="col-sm-8 offset-sm-2 text-center colorlib-heading colorlib-heading-sm">
+	<h2>Related Products</h2>
+	</div>
+	</div>
+	<div class="row">
+	<div class="col-md-3 col-lg-3 mb-4 text-center">
+	<div class="product-entry border">
+	<a href="#" class="prod-img">
+	<img src="images/item-1.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
+	</a>
+	<div class="desc">
+	<h2><a href="#">Women's Boots Shoes Maca</a></h2>
+	<span class="price">$139.00</span>
+	</div>
+	</div>
+	</div>
+	<div class="col-md-3 col-lg-3 mb-4 text-center">
+	<div class="product-entry border">
+	<a href="#" class="prod-img">
+	<img src="images/item-2.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
+	</a>
+	<div class="desc">
+	<h2><a href="#">Women's Minam Meaghan</a></h2>
+	<span class="price">$139.00</span>
+	</div>
+	</div>
+	</div>
+	<div class="col-md-3 col-lg-3 mb-4 text-center">
+	<div class="product-entry border">
+	<a href="#" class="prod-img">
+	<img src="images/item-3.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
+	</a>
+	<div class="desc">
+	<h2><a href="#">Men's Taja Commissioner</a></h2>
+	<span class="price">$139.00</span>
+	</div>
+	</div>
+	</div>
+	<div class="col-md-3 col-lg-3 mb-4 text-center">
+	<div class="product-entry border">
+	<a href="#" class="prod-img">
+	<img src="images/item-4.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
+	</a>
+	<div class="desc">
+	<h2><a href="#">Russ Men's Sneakers</a></h2>
+	<span class="price">$139.00</span>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div> *@
+</div>
+
+
+@section Scripts {
+
+	<script>
+		//移除商品
+		function removeItem(size) {
+			var Size = parseFloat(size);
+			$.ajax({
+				url: '@Url.Action("RemoveCart", "Home")',
+				type: 'POST',
+				dataType: 'json',
+				data: { size: Size },
+				success: function (result) {
+					if (result.success) {
+						// location.reload(); // 重新載入頁面
+						// $('#product_' + size).remove(); //刪除相應 ID 的商品格
+						// $('#productCart').load();
+						location.reload();
+					} else {
+						alert('Failed to remove item.');
+					}
+				},
+				error: function () {
+					alert('Failed to remove item.');
+				}
+			});
+		}
+		//=========================================================
+
+
+		//控制數量
+		function updateQuantity(size, newQuantity) {
+			var Size = parseFloat(size);
+			$.ajax({
+				url: '@Url.Action("UpdateCartItemQuantity", "Home")',
+				type: 'POST',
+				dataType: 'json',
+				data: { size: Size, newQuantity: newQuantity },
+				success: function (result) {
+					if (result.success) {
+						// 更新購物車總金額
+						calculateTotalAmount(size);
+					} else {
+						alert('Failed to update quantity.');
+					}
+				},
+				error: function () {
+					alert('Failed to update quantity.');
+				}
+			});
+		}
+
+		function decreaseQuantity(size) {
+			console.log("Increasing quantity for size: " + size);
+			var quantityInput = document.getElementById("quantity_" + size);
+			var currentValue = parseInt(quantityInput.value);
+			if (currentValue > 1) {
+				quantityInput.value = currentValue - 1;
+				var newQuantity = quantityInput.value;
+				updateQuantity(size, newQuantity);
+			}
+		}
+		function increaseQuantity(size) {
+			console.log("Increasing quantity for size: " + size);
+			var quantityInput = document.getElementById("quantity_" + size);
+			var currentValue = parseInt(quantityInput.value);
+			if (currentValue < 100) {
+				quantityInput.value = currentValue + 1;
+				var newQuantity = quantityInput.value;
+				updateQuantity(size, newQuantity);
+			}
+		}
+
+		function calculateTotalAmount(size) {
+			$.ajax({
+				url: '@Url.Action("GetTotalAmount", "Home")',
+				type: 'GET',
+				data: { size: size },
+				success: function (result) {
+					var unitPriceSelector = '#subtotal_' + size;
+					$('#totalAmount').text('$' + result.totalAmount.toFixed(2));
+					$(unitPriceSelector).text(result.subtotal.toFixed(2));
+				},
+				error: function () {
+					alert('Failed to calculate total amount.');
+				}
+			});
+		}
+		//========================================================
+		//.顯示總金額
+		$(document).ready(function () {
+			$.ajax({
+				url: '@Url.Action("GetTotalAmountForCustomer", "Home")',
+				type: 'GET',
+				success: function (data) {
+					$('#totalAmount').text('$' + data.toFixed(2)); // 更新總金額到適當的 HTML 元素中
+				},
+				error: function (xhr, status, error) {
+					console.error('Failed to get total amount:', error);
+				}
+			});
+		});
+	</script>
+}

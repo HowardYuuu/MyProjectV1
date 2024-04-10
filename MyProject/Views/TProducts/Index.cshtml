@@ -1,0 +1,276 @@
+﻿@* @model IEnumerable<MyProject.Models.TProduct> *@
+@using MyProject.ViewModels
+@model IEnumerable<ProductViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+@{
+    Layout = "~/Views/Shared/_LayoutAD.cshtml";
+}
+<h1 style="margin-inline:20px;margin-bottom:0px;margin-block:5px;font-weight:900;color:#003060">商品管理</h1>
+@* <hr /> *@
+@* <button class="btn btn-secondary " style="margin:10px"  > *@
+
+@* </button> *@
+
+
+<div class="card mb-4" id="ProductTable" style="margin-left:0px">
+    @* <div class="card-header">
+        <svg class="svg-inline--fa fa-table me-1" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="table" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M64 256V160H224v96H64zm0 64H224v96H64V320zm224 96V320H448v96H288zM448 256H288V160H448v96zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64z"></path></svg><!-- <i class="fas fa-table me-1"></i> Font Awesome fontawesome.com -->
+        DataTable Example
+    </div> *@
+    <div class="card-body">
+        <div class="datatable-wrapper datatable-loading no-footer sortable searchable fixed-columns">
+            <div class="datatable-top">
+                <div class="datatable-dropdown">
+                    <label>
+                        <select class="datatable-selector"><option value="5">5</option><option value="10" selected="">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option></select> 
+                    </label>
+                    <a asp-action="Create" class="btn btn-primary" style="background-color:#01814A; border:none; margin:0px">新增</a>
+                </div>
+                
+                <div class="datatable-search">
+                    @* <input class="datatable-input" placeholder="" type="search" title="Search within table" aria-controls="datatablesSimple"> *@
+                </div>
+            </div>
+            <div class="datatable-container">
+                <table id="datatablesSimple" class="datatable-table">
+                    <thead  style="background-color:darkslategray; color:whitesmoke">
+                    <tr>
+                        <th>
+                                @Html.DisplayNameFor(model => model.ProductName)
+                        </th>
+                        <th>
+                                @Html.DisplayNameFor(model => model.Brand)
+                        </th>
+                        <th>
+                                @Html.DisplayNameFor(model => model.Number)
+                        </th>
+                        
+                        <th>
+                                @Html.DisplayNameFor(model => model.Style)
+                        </th>
+							<th>
+                                @Html.DisplayNameFor(model => model.MainColor)
+							</th>
+                        <th>
+                                @Html.DisplayNameFor(model => model.Gender)
+                        </th>
+                            @* <th>
+                                @Html.DisplayNameFor(model => model.尺寸)
+                            </th> *@
+                            <th>
+                                @Html.DisplayNameFor(model => model.Width)
+                            </th>
+                        <th>
+                                @Html.DisplayNameFor(model => model.Price)
+                        </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.OnSale)
+                            </th>
+                       @*  <th>
+                                @Html.DisplayNameFor(model => model.庫存)
+                        </th> *@
+                            <th>
+                                @Html.DisplayNameFor(model => model.Image)
+                            </th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div style="width: 100px; word-wrap: break-word;">
+                                        @Html.DisplayFor(modelItem => item.ProductName)
+                                    </div>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Brand)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Number)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Style)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.MainColor)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Gender)
+                                </td>
+                                @* <td>
+                                    @Html.DisplayFor(modelItem => item.尺寸)
+                                </td> *@
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Width)
+                                </td>
+                                <td>
+                                    @{
+                                        var 整數價格 = (int)item.Price;
+                                    }
+                                    @Html.DisplayFor(modelItem => 整數價格)
+                                </td>
+                                <td>
+                                    @* @Html.DisplayFor(modelItem => item.OnSale) *@
+                                   @*  <select id="onSaleSelect" onchange="updateOnSale('@item.ProductId', this.value)">
+                                        @Html.Raw("<option value='true'" + (item.OnSale ? " selected" : "") + ">已上架</option>")
+                                        @Html.Raw("<option value='false'" + (!item.OnSale ? " selected" : "") + ">已下架</option>")
+                                    </select> *@
+
+                                    <input type="radio" id="onSaleTrue" name="onSale_@item.ProductId" value="true" @(item.OnSale ? "checked" : "") onchange="updateOnSale('@item.ProductId', true)">
+                                        <label for="onSaleTrue">已上架</label>
+
+                                    <input type="radio" id="onSaleFalse" name="onSale_@item.ProductId" value="false" @(item.OnSale ? "" : "checked") onchange="updateOnSale('@item.ProductId', false)">
+                                        <label for="onSaleFalse">未上架</label>
+                                    
+                                    
+                                </td>
+                                <td>
+                                    @* @Html.DisplayFor(modelItem => item.圖片) *@
+                                    @if (!string.IsNullOrEmpty(item.Image))
+                                    {
+                                        <div style="max-width: 100px; max-height: 100px; overflow: hidden;">
+                                            <img src="~/images/Products/@item.Image" alt="Product Image" style="width: 100%; height: auto;" />
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                         <div style="max-width: 100px; max-height: 100px; overflow: hidden;">
+                                        <img src="~/images/noimage.png" alt="No Image" style="width: 100%; height: auto;" />
+                                        </div>
+                                    }
+                                </td>
+
+								<td>
+									@*  <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-primary" style="background-color:red; border:none; margin-top:3px; width: 100%;">刪除</a> *@
+									@* <a asp-action="Details" asp-route-id="@item.產品id">細節</a> | *@
+                                    <div class="btn-group-vertical d-flex flex-column justify-content-end " role="group" style="width: 100%;padding:0px">
+                                        <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-primary" style="background-color:#EA7500; border:none; width: 100%;">編輯</a>
+                                        <a asp-action="SizeEdit" asp-route-id="@item.ProductId" class="btn btn-primary" style="background-color:#408080; border:none; margin-top:3px; width: 100%;padding-inline:0px">尺寸庫存設定</a>
+                                        <a onclick="confirmDelete(@item.ProductId)" class="btn btn-primary" style="background-color:red; border:none; margin-top:3px; width: 100%;">刪除</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+            </table>
+            </div>
+            <div class="datatable-bottom">
+                @* <div class="datatable-info">Showing 1 to 10 of 57 entries</div> *@
+                <nav class="datatable-pagination"><ul class="datatable-pagination-list"><li class="datatable-pagination-list-item datatable-hidden datatable-disabled"><a data-page="1" class="datatable-pagination-list-item-link">‹</a></li><li class="datatable-pagination-list-item datatable-active"><a data-page="1" class="datatable-pagination-list-item-link">1</a></li><li class="datatable-pagination-list-item"><a data-page="2" class="datatable-pagination-list-item-link">2</a></li><li class="datatable-pagination-list-item"><a data-page="3" class="datatable-pagination-list-item-link">3</a></li><li class="datatable-pagination-list-item"><a data-page="4" class="datatable-pagination-list-item-link">4</a></li><li class="datatable-pagination-list-item"><a data-page="5" class="datatable-pagination-list-item-link">5</a></li><li class="datatable-pagination-list-item"><a data-page="6" class="datatable-pagination-list-item-link">6</a></li><li class="datatable-pagination-list-item"><a data-page="2" class="datatable-pagination-list-item-link">›</a></li></ul></nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        // function updateOnSale(productId, value) {
+        //     // 發送AJAX請求以更新商品上下架狀態
+        //     $.ajax({
+        //         url: '/TProducts/UpdateOnSaleStatus',
+        //         type: 'POST',
+        //         data: { productId: productId, onSale: value },
+        //         success: function (response) {
+        //             // 如果需要處理回應，可以在這裡添加代碼
+        //         },
+        //         error: function (xhr, status, error) {
+        //             console.error('AJAX request error:', error);
+        //         }
+        //     });
+        // }
+
+        function updateOnSale(productId, value) {
+            // 發送AJAX請求以更新商品上下架狀態
+            $.ajax({
+                url: '/TProducts/UpdateOnSaleStatus',
+                type: 'POST',
+                data: { productId: productId, onSale: value },
+                success: function (response) {
+                    // 如果需要處理回應，可以在這裡添加代碼
+                    // 成功時處理
+                    if (value) {
+                        // 如果是上架，顯示成功提示
+                        Swal.fire({
+                            icon: 'success',
+                            title: '商品已上架',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        $('#ProductTable').load(window.location.href + ' #ProductTable');
+                    } else {
+                        // 如果是下架，顯示成功提示
+                        Swal.fire({
+                            icon: 'success',
+                            title: '商品已下架',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                    $('#ProductTable').load(window.location.href + ' #ProductTable');
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX request error:', error);
+                }
+            });
+        }
+        ////=============================================
+
+        ////刪除商品
+        function confirmDelete(productId) {
+            Swal.fire({
+                title: '您確定要刪除嗎？ ',
+                text: "一旦刪除，將無法撤銷此操作！",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: '取消',
+                confirmButtonText: '是的，刪除它！ '
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteProduct(productId);
+                }
+            });
+        }
+
+        function deleteProduct(productId) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("ProductDelete", "TProducts")',
+                data: {id: productId },
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '刪除成功！ ',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        // 可以新增額外的操作，例如重新載入頁面或移除刪除的元素
+                        // 刪除成功後即時更新頁面內容
+                        $('#ProductTable').load(window.location.href + ' #ProductTable');
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '刪除失敗！ ',
+                            text: response.errorMessage
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '刪除失敗！ ',
+                        text: '服務器目前異常：' + error
+                    });
+                }
+            });
+        }
+
+    </script>
+}

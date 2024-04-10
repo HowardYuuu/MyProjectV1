@@ -1,0 +1,82 @@
+﻿{
+   "CodeGenerationMode": 3,
+   "ContextClassName": "MyProjectContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "MyProject",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[tBrand]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tCustomer]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tEmployee]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tOrderDetails]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tOrders]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tProducts]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tShoppingCart]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tSizeQty]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[VProductSizeQty]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[GetOrderID]",
+         "ObjectType": 2
+      }
+   ],
+   "UiHint": "laptop-987drii6.MyProject.dbo",
+   "UncountableWords": null,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDateOnlyTimeOnly": false,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false
+}

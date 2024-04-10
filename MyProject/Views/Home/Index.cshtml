@@ -1,0 +1,355 @@
+@using MyProject.ViewModels
+@model ProSizeQtyViewModel
+
+@{
+	ViewData["Title"] = "Home Page";
+}
+@section Styles{
+
+}
+
+		
+
+
+
+<div class="colorlib-loader"></div>
+
+<div id="page">
+@* 	<div class="breadcrumbs-two">
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<div class="breadcrumbs-img" style="background-image: url(images/airforceAD.png);">
+						<h2></h2>
+					</div>
+					<div class="menu text-center">
+						<p><a href="#">New Arrivals</a> <a href="#">Best Sellers</a> <a href="#">Extended Widths</a> <a href="#">Sale</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> *@
+	<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" >
+		<div class="carousel-indicators">
+			<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+			<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+			@* <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button> *@
+		</div>
+		<div class="carousel-inner">
+			<div class="carousel-item active">
+				<div class="breadcrumbs-img" style="background-image: url(/images/adidasultraboost5.png);height:400px;">
+					<h2></h2>
+				</div>
+				@* <img src="~/images/airforceAD.png" class="d-block" style="width:500px;" alt="..."> *@
+			</div>
+			<div class="carousel-item">
+				<div class="breadcrumbs-img" style="background-image: url(/images/airforceAD.png);height:400px;">
+					<h2></h2>
+				</div>
+			</div>
+			@* <div class="carousel-item">
+				<img src="..." class="d-block w-100" alt="...">
+			</div> *@
+		</div>
+		<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Previous</span>
+		</button>
+		<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Next</span>
+		</button>
+	</div>
+	</div>
+
+
+	<div>
+@* 
+	<div class="colorlib-featured">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-4 text-center">
+					<div class="featured">
+						<div class="featured-img featured-img-2" style="background-image: url(images/img_bg_2.jpg);">
+							<h2>Casuals</h2>
+							<p><a href="#" class="btn btn-primary btn-lg">Shop now</a></p>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4 text-center">
+					<div class="featured">
+						<div class="featured-img featured-img-2" style="background-image: url(images/women.jpg);">
+							<h2>Dress</h2>
+							<p><a href="#" class="btn btn-primary btn-lg">Shop now</a></p>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4 text-center">
+					<div class="featured">
+						<div class="featured-img featured-img-2" style="background-image: url(images/item-11.jpg);">
+							<h2>Sports</h2>
+							<p><a href="#" class="btn btn-primary btn-lg">Shop now</a></p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> *@
+	</div>
+
+	<div class="colorlib-product" style="margin-top:15px;padding-top:0px;">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-3 col-xl-3">
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="side border mb-1">
+								<h3>品牌</h3>
+								<ul>
+									<li><a href="#">Nike</a></li>
+									<li><a href="#">Adidas</a></li>
+									<li><a href="#">New Balance</a></li>
+									<li><a href="#">Converse</a></li>
+									<li><a href="#">Puma</a></li>
+								</ul>
+							</div>
+						</div>
+						<div class="col-sm-12">
+							<div class="side border mb-1">
+								<h3>尺寸/寬度</h3>
+								<div class="block-26 mb-2">
+									<h4>尺寸(CM)</h4>
+									<ul id="size">
+									<li style="background-color: #4F4F4F	" onclick="getValue(22)"><a href="#">22</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(22.5)"><a href="#">22.5</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(23)"><a href="#">23</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(23.5)"><a href="#">23.5</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(24)"><a href="#">24</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(24.5)"><a href="#">24.5</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(25)"><a href="#">25</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(22)"><a href="#">25.5</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(22)"><a href="#">26</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(22)"><a href="#">26.5</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(22)"><a href="#">27</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(22)"><a href="#">27.5</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(22)"><a href="#">28</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(22)"><a href="#">28.5</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(22)"><a href="#">29</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(22)"><a href="#">29.5</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(22)"><a href="#">30</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(22)"><a href="#">30.5</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(22)"><a href="#">31</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(22)"><a href="#">31.5</a></li>
+									<li style="background-color: #4F4F4F" onclick="getValue(22)"><a href="#">32</a></li>
+									</ul>
+								</div>
+								<div class="block-26">
+									<h4>寬度</h4>
+									<ul>
+									<li style="background-color: #4F4F4F"><a href="#">寬</a></li>
+									<li style="background-color: #4F4F4F"><a href="#">窄</a></li>
+									<li style="background-color: #4F4F4F"><a href="#">正常</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-12">
+							<div class="side border mb-1">
+								<h3>類型</h3>
+								<ul>
+									<li><a href="#">運動</a></li>
+									<li><a href="#">休閒</a></li>
+								</ul>
+							</div>
+						</div>
+						<div class="col-sm-12">
+							<div class="side border mb-1">
+								<h3>顏色</h3>
+								<ul>
+									<li><a href="#">黑</a></li>
+									<li><a href="#">白</a></li>
+									<li><a href="#">藍</a></li>
+									<li><a href="#">紅</a></li>
+									<li><a href="#">灰</a></li>
+									<li><a href="#">其他</a></li>
+								</ul>
+							</div>
+						</div>
+					@* 	<div class="col-sm-12">
+							<div class="side border mb-1">
+								<h3>Material</h3>
+								<ul>
+									<li><a href="#">Leather</a></li>
+									<li><a href="#">Suede</a></li>
+								</ul>
+							</div>
+						</div>
+						<div class="col-sm-12">
+							<div class="side border mb-1">
+								<h3>Technologies</h3>
+								<ul>
+									<li><a href="#">BioBevel</a></li>
+									<li><a href="#">Groove</a></li>
+									<li><a href="#">FlexBevel</a></li>
+								</ul>
+							</div>
+						</div> *@
+					</div>
+				</div>
+
+				<div class="col-lg-9 col-xl-9">
+					<div class="row row-pb-md">
+
+					@foreach(var item in Model.Product.Where(x=>x.FOnSale == true))
+					{
+						<!--商品Cards-->
+						<div class="col-lg-4 mb-4 text-center">
+							<div class="product-entry border" style="display: flex; flex-direction: column; height: 100%;">
+								<a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@Convert.ToInt32(item.FProductId)" class="prod-img">
+									<img src="~/images/products/@item.FImgPath" class="img-fluid" alt="NoImage">
+								</a>
+								<div class="desc" style="padding-bottom: 0px;">
+									<h2><a href="#">@item.FProductName</a></h2>
+								</div>
+							
+								<div style="margin-top: auto; display: flex; justify-content: space-between;">
+									<div class="desc" style="margin-bottom:0px;padding:0px;padding-left:10px">
+										<p style="display: inline-block;margin:0px;padding:0px">售價：<span id="price" class="price" style="font-size:30px;color:red" value="@Convert.ToInt32(item.FPrice)">
+											<span class ="" style="font-size:20px;color:red">$</span> @Convert.ToInt32(item.FPrice)</span>
+											</p>
+
+										
+										<div id="qtyDisplay_@item.FProductId">-</div>
+									</div>
+									
+									<div class="desc" style="padding: 0px; margin-bottom: 0px; display: flex; justify-content: flex-end; align-items: flex-end;">
+										<select class="form-select form-select-sm" id="sizeSelect_@item.FProductId" style="margin:5px">
+											@foreach (var s in Model.SizeQty.Where(x => x.FProductId == item.FProductId && x.FQuantity != 0).Distinct().OrderBy(x => x.FSize).ToList())
+											{
+												<option name="@item.FProductId" value="@s.FSize">@s.FSize</option>
+											}
+										</select>
+										<button class="btn btn-primary cart text-center" style="background-color:#FFA042; border:none;margin-left: auto;" type="submit">
+											+<i class="icon-shopping-cart"></i>
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--商品Cards-->
+					}
+
+					</div>
+					<div class="row">
+						<div class="col-md-12 text-center">
+							<div class="block-27">
+								<ul>
+									<li><a href="#"><i class="ion-ios-arrow-back"></i></a></li>
+									<li class="active"><span>1</span></li>
+									<li><a href="#">2</a></li>
+									<li><a href="#">3</a></li>
+									<li><a href="#">4</a></li>
+									<li><a href="#">5</a></li>
+									<li><a href="#"><i class="ion-ios-arrow-forward"></i></a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+@section Scripts {
+
+	<script>
+		//顯示size對應的庫存
+		$(document).ready(function () {
+			// 尺寸選擇框改變時和頁面加載時都調用 updateQuantity 函數
+			$('[id^="sizeSelect_"]').change(function () {
+				updateQuantity($(this));
+			});
+
+			// 頁面加載時調用 updateQuantity 函數，顯示預設選項的庫存數量
+			$('[id^="sizeSelect_"]').each(function () {
+				updateQuantity($(this));
+			});
+
+			// 定義函數用於發送 AJAX 請求並更新庫存數量顯示
+			function updateQuantity(selectElement) {
+				var productId = selectElement.attr("id").split("_")[1];
+				var size = parseFloat(selectElement.val());
+
+				$.ajax({
+					url: '@Url.Action("GetQuantity", "Home")',
+					type: 'GET',
+					data: { productId: productId, size: size },
+					success: function (data) {
+						$('#qtyDisplay_' + productId).html('庫存數量: ' + data);
+					}
+				});
+			}
+		});
+		////===================================================
+
+		//加入購物車
+		$(document).ready(function () {
+			$('.cart').click(function () {
+				var productId = $(this).closest('.product-entry').find('select').attr('id').split('_')[1];
+				var size = parseFloat($(this).closest('.product-entry').find('select').val());
+				var price = $(this).closest('.product-entry').find('.price').attr('value');
+
+				$.ajax({
+					url: '@Url.Action("AddToCart", "Home")',
+					type: 'POST',
+					data: { productId: productId, size: size, price: price },
+					success: function () {
+						// 寫入資料庫成功，顯示 SweetAlert2 成功提示
+						Swal.fire({
+							icon: 'success',
+							title: '成功加入購物車',
+							showConfirmButton: false,
+							timer: 1500
+						});
+
+						// 更新購物車計數器
+						updateCartCounter();
+					},
+					error: function (xhr, status, error) {
+						// 寫入資料庫失敗，顯示錯誤提示
+						Swal.fire({
+							icon: 'error',
+							title: '請先登入',
+							text: error,
+							confirmButtonText: 'OK',
+							// allowOutsideClick: false, // 不允許點擊外部關閉提示框
+							allowEscapeKey: false // 不允許按 ESC 鍵關閉提示框
+						}).then((result) => {
+							if (result.isConfirmed) {
+								// 如果用戶點擊了 OK 按鈕，則跳轉到登入頁面
+								window.location.href = '@Url.Action("Login", "Member")';
+							}
+						});
+					}
+				});
+			});
+
+			// 更新購物車計數器函數
+			function updateCartCounter() {
+				$.ajax({
+					url: '@Url.Action("GetCartCount", "Home")',
+					type: 'GET',
+					success: function (data) {
+						console.log('Cart counter updated to: ' + data);
+						$('#cartNumber').text(data);
+					}
+				});
+			}
+		});
+
+	</script>
+}
+	
+
+
+

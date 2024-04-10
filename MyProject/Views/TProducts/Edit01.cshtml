@@ -1,0 +1,88 @@
+﻿@* @model MyProject.Models.TProduct *@
+@model VproductSizeQty
+
+@{
+    ViewData["Title"] = "Edit";
+}
+@{
+    Layout = "~/Views/Shared/_LayoutAD.cshtml";
+}
+<h1>編輯</h1>
+
+<h4>TProduct</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="產品id" />
+            <div class="form-group">
+                <label asp-for="名稱" class="control-label"></label>
+                <input asp-for="名稱" class="form-control" />
+                <span asp-validation-for="名稱" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="品牌" class="control-label"></label>
+                <input asp-for="品牌" class="form-control" />
+                <span asp-validation-for="品牌" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="型號" class="control-label"></label>
+                <input asp-for="型號" class="form-control" />
+                <span asp-validation-for="型號" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="風格" class="control-label"></label>
+                <input asp-for="風格" class="form-control" />
+                <span asp-validation-for="風格" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="風格" class="control-label"></label>
+                <input asp-for="風格" class="form-control" />
+                <span asp-validation-for="風格" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="顏色" class="control-label"></label>
+                <input asp-for="顏色" class="form-control" />
+                <span asp-validation-for="顏色" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="性別" class="control-label"></label>
+                <input asp-for="性別" class="form-control" />
+                <span asp-validation-for="性別" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="尺寸" class="control-label"></label>
+                <input asp-for="尺寸" class="form-control" />
+                <span asp-validation-for="尺寸" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="價格" class="control-label"></label>
+                <input asp-for="價格" class="form-control" />
+                <span asp-validation-for="價格" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="庫存" class="control-label"></label>
+                <input asp-for="庫存" class="form-control" />
+                <span asp-validation-for="庫存" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="圖片" class="control-label"></label>
+                <input asp-for="圖片" class="form-control" />
+                <span asp-validation-for="圖片" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">回管理頁面</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

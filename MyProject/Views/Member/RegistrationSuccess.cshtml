@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewData["Title"] = "RegistrationSuccess";
+}
+@section Styles{
+ 
+    <style>
+/* 用於居中顯示動畫 */
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* 註冊成功動畫 */
+.success-animation {
+    width: 100px;
+    height: 100px;
+    background-color: green;
+    border-radius: 50%;
+    position: relative;
+    transition: transform 0.5s ease-in-out;
+}
+
+/* 打勾動畫 */
+.success-animation::before,
+.success-animation::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 40px;
+    border-bottom: 5px solid white;
+    transform-origin: bottom;
+    animation: draw 0.5s ease-in-out forwards;
+}
+
+.success-animation::before {
+    left: 28px;
+    top: 40px;
+    transform: rotate(-45deg);
+}
+
+.success-animation::after {
+    left: 34px;
+    top: 40px;
+    transform: rotate(45deg);
+}
+
+
+/* 應用動畫效果 */
+.success-animation.active {
+    transform: scale(1.2);
+}
+    </style>
+}
+<title>註冊成功</title>
+@* <div class="center">
+    <!-- 註冊成功的動畫 -->
+    <div class="success-animation"></div>
+</div> *@
+
+@section Scripts{
+    <script>
+        // 使用JavaScript添加active類，以應用動畫效果
+        document.addEventListener("DOMContentLoaded", function () {
+            var successAnimation = document.querySelector(".success-animation");
+            successAnimation.classList.add("active");
+        });
+
+
+        setTimeout(function () {
+            window.location.href = '@Url.Action("Login", "Member")';
+        }, 3000); // 3 秒後自動跳轉到登入頁面
+    </script>
+}
