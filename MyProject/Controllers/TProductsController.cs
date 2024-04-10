@@ -257,20 +257,28 @@ namespace MyProject.Controllers
         {
             try
             {
-                var productToDelete = _context.TProducts.FirstOrDefault(x => x.FProductId == id );
-                if (productToDelete == null)
-                {
-                    return Json(new { success = false, errorMessage = "找不到要刪除的產品！" });
+				var productToDelete = _context.TProducts.FirstOrDefault(x => x.FProductId == id);
+
+				if (productToDelete == null)
+				{
+					return Json(new { success = false, errorMessage = "找不到要刪除的產品！" });
+				}
+
+				var sizeQty = _context.TSizeQties.Where(x => x.FProductId == id).ToList();
+				if (sizeQty.Any())
+				{
+					_context.TSizeQties.RemoveRange(sizeQty);
+                    _context.SaveChanges();
                 }
 
-                _context.TProducts.Remove(productToDelete);
-                _context.SaveChanges();
+				_context.TProducts.Remove(productToDelete);
+				_context.SaveChanges();
 
-                return Json(new { success = true });
-            }
+				return Json(new { success = true, message = "產品及其相關庫存已成功刪除。" });
+			}
             catch (Exception ex)
             {
-                return Json(new { success = false, errorMessage = "刪除產品時出現錯誤：" + ex.Message });
+                return Json(new { success = false, errorMessage = "刪除產品時出現錯誤，請稍後在試。" });
             }
         }
 

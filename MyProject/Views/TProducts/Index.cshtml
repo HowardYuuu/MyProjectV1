@@ -224,7 +224,7 @@
         function confirmDelete(productId) {
             Swal.fire({
                 title: '您確定要刪除嗎？ ',
-                text: "一旦刪除，將無法撤銷此操作！",
+                text: "一旦刪除，商品的尺寸庫存也會一併刪除，將無法撤銷此操作！",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -248,8 +248,9 @@
                         Swal.fire({
                             icon: 'success',
                             title: '刪除成功！ ',
+                            text: response.message,
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 2000
                         });
                         // 可以新增額外的操作，例如重新載入頁面或移除刪除的元素
                         // 刪除成功後即時更新頁面內容
