@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Azure;
+using Google.Apis.Auth;
+using System.Net;
+using prjTravelPlatform_release.Areas.CustomizedIdentity.DTO.Res;
 
 namespace MyProject.Controllers
 {
@@ -217,6 +220,164 @@ namespace MyProject.Controllers
                 // 比較雜湊後的密碼是否匹配
                 return inputHashedPassword == hashedPassword;
             }
+        }
+
+        public string SavePicture(string imageUrl)
+        {
+            //Guid.NewGuid().ToString()
+            string fileName = Guid.NewGuid().ToString() + ".jpg"; // 使用 Guid 生成檔名
+            string imagePath = Path.Combine("wwwroot", "images", "Uploads", fileName);
+
+            try
+            {
+                using (WebClient client = new WebClient())
+                {
+                    client.DownloadFile(imageUrl, imagePath);
+                }
+                //"images/Uploads/" +
+                return  fileName; // 回傳檔名
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving image from URL: {ex.Message}");
+                return null; // 若發生錯誤則回傳 null
+            }
+        }
+
+
+        public async Task<IActionResult> ValidGoogleLoginAsync()
+        {
+            string? formCredential = Request.Form["credential"]; //回傳憑證
+            string? formToken = Request.Form["g_csrf_token"]; //回傳令牌
+            string? cookiesToken = Request.Cookies["g_csrf_token"]; //Cookie 令牌
+            string pic;
+            string id;
+            // 驗證 Google Token
+            GoogleJsonWebSignature.Payload? payload = VerifyGoogleToken(formCredential, formToken, cookiesToken).Result;
+            if (payload == null)
+            {
+                // 驗證失敗
+                //ViewData["Msg"] = "驗證 Google 授權失敗";
+            }
+            else
+            {
+                if (_context.TCustomers.FirstOrDefault(x => x.FEmail == payload.Email) == null)
+                {
+                    TCustomer customer = new TCustomer()
+                    {
+                        FEmail = payload.Email,
+                        FName = payload.Name,
+                        FImgPath = SavePicture(payload.Picture),
+                    };
+                    await _context.AddAsync(customer);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    //var customer = _context.TCustomers.FirstOrDefault(x=>x.FEmail==payload.Email);
+                    //customer.FEmail = payload.Email;
+                    //customer.FName = payload.Name;
+                    //customer.FImgPath = SavePicture(payload.Picture, payload.Email);
+                    // _context.Update(customer);
+                    //await _context.SaveChangesAsync();
+                }
+            }
+            pic = _context.TCustomers.FirstOrDefault(x => x.FEmail == payload.Email).FImgPath;
+            id = _context.TCustomers.FirstOrDefault(x => x.FEmail == payload.Email).FUserId.ToString();
+            var claims = new List<Claim>()
+                {
+                    new Claim(ClaimTypes.Name, payload.Name),
+                    new Claim(ClaimTypes.Email, payload.Email),
+                    new Claim(ClaimTypes.Uri, pic),
+                    new Claim(ClaimTypes.NameIdentifier, id),
+
+                };
+            var authProperties = new AuthenticationProperties
+            {
+                //AllowRefresh = <bool>,
+                // Refreshing the authentication session should be allowed.
+
+                //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+                // The time at which the authentication ticket expires. A 
+                // value set here overrides the ExpireTimeSpan option of 
+                // CookieAuthenticationOptions set with AddCookie.
+
+                //IsPersistent = true,
+                // Whether the authentication session is persisted across 
+                // multiple requests. When used with cookies, controls
+                // whether the cookie's lifetime is absolute (matching the
+                // lifetime of the authentication ticket) or session-based.
+
+                //IssuedUtc = <DateTimeOffset>,
+                // The time at which the authentication ticket was issued.
+
+                //RedirectUri = < string >
+                // The full path or absolute URI to be used as an http 
+                // redirect response value.
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), authProperties);
+
+            var userInfo = new CusResDTO()
+            {
+                Success = true,
+                FullName = payload.Name,
+                Email = payload.Email,
+            };
+
+            //return Ok(userInfo);
+            return Redirect("/");
+        }
+
+        public async Task<GoogleJsonWebSignature.Payload?> VerifyGoogleToken(string? formCredential, string? formToken, string? cookiesToken)
+        {
+            // 檢查空值
+            if (formCredential == null || formToken == null && cookiesToken == null)
+            {
+                return null;
+            }
+
+            GoogleJsonWebSignature.Payload? payload;
+            try
+            {
+                // 驗證 token
+                if (formToken != cookiesToken)
+                {
+                    return null;
+                }
+
+                // 驗證憑證
+                IConfiguration Config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
+                string GoogleApiClientId = Config.GetSection("GoogleApiClientId").Value;
+                var settings = new GoogleJsonWebSignature.ValidationSettings()
+                {
+                    Audience = new List<string>() { GoogleApiClientId }
+                };
+                payload = await GoogleJsonWebSignature.ValidateAsync(formCredential, settings);
+                if (!payload.Issuer.Equals("accounts.google.com") && !payload.Issuer.Equals("https://accounts.google.com"))
+                {
+                    return null;
+                }
+                if (payload.ExpirationTimeSeconds == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    DateTime now = DateTime.Now.ToUniversalTime();
+                    DateTime expiration = DateTimeOffset.FromUnixTimeSeconds((long)payload.ExpirationTimeSeconds).DateTime;
+                    if (now > expiration)
+                    {
+                        return null;
+                    }
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            return payload;
         }
 
         #region 寄信驗證

@@ -64,31 +64,49 @@
 
 							<div class="col-sm-7 col-md-9">
 								<div id="colorlib-logo"><a asp-controller="Home" asp-action="Index">
-									<img src="~/images/iconLogo02.png" style="width:100px;" />
+									<img src="~/images/iconLogo03.png" style="width:150px;" />
 								</a></div>
 							</div>
 
+
+							<!--登入頭像-->
 						<div class="col-sm-5 col-md-3 justify-content-end" style="">
-							<div class="text-right " style="padding-left:220px">
+							
 								@if (User.Identity != null && User.Identity.IsAuthenticated)
-								{
-									<ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4 " style="width:25px;">
+							{
+								<div class="" style="padding-left:210px">
+
+									<ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4 d-flex flex-row gap-2 " style="width:25px;">
+										@* <li style="white-space: nowrap;align-items: center;">@_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value</li> *@
 										<li class="nav-item dropdown">
-											<a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><svg class="svg-inline--fa fa-user fa-fw" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"></path></svg><!-- <i class="fas fa-user fa-fw"></i> Font Awesome fontawesome.com --></a>
-											<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+											<a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+												
+												<img id="UserImage2" src="~/images/Uploads/@_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Uri).Value" style="width:40px; height:40px; border-radius:50%" class="dropdown__button" />
+											</a>
+											<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" style="">
 												<li><a class="dropdown-item">嗨！@_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name)</a></li>
 												<li><a class="dropdown-item" href="#!">設定</a></li>
 												<li><hr class="dropdown-divider"></li>
 												<li><a class="dropdown-item" href="#!" id="logout">登出</a></li>
 											</ul>
 										</li>
+										
 									</ul>
+									</div>
 								}
 								else
 								{
+								<div class="text-right " style="padding-left:220px">
 									<ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4 " style="width:25px;">
 										<li class="nav-item dropdown">
-											<a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><svg class="svg-inline--fa fa-user fa-fw" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"></path></svg><!-- <i class="fas fa-user fa-fw"></i> Font Awesome fontawesome.com --></a>
+											<a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+												<svg class="svg-inline--fa fa-user fa-fw" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg="">
+													<path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z">
+
+													</path>
+													</svg>
+													<!-- <i class="fas fa-user fa-fw"></i> Font Awesome fontawesome.com -->
+												</a>
 											<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 												<li><a class="dropdown-item" asp-controller="Member" asp-action="Login">登入</a></li>
 												<li><a class="dropdown-item" href="#!">設定</a></li>
@@ -98,9 +116,10 @@
 											</ul>
 										</li>
 									</ul>
+								</div>
 								}
 
-							</div>
+							
 							
 								<form action="#" class="search-wrap">
 									<div class="form-group">

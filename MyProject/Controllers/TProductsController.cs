@@ -258,7 +258,7 @@ namespace MyProject.Controllers
             try
             {
 				var productToDelete = _context.TProducts.FirstOrDefault(x => x.FProductId == id);
-
+                
 				if (productToDelete == null)
 				{
 					return Json(new { success = false, errorMessage = "找不到要刪除的產品！" });

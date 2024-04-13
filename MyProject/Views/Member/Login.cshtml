@@ -32,6 +32,22 @@
                    會員登入
                 </div>
                 <div class="card-body">
+
+                    <!--Google登入---------------->
+                    <div class="d-flex justify-content-center">
+                        <div class="social-container">
+                            @* <a href="#" class="social"><i class="fab fa-facebook-f"></i></a> *@
+                            <a href="#" class="social"><i class="g_id_signin" data-type="icon"></i></a>
+                            @* <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a> *@
+                        </div>
+                        <div id="g_id_onload"
+                             data-client_id="798697461532-gkg4vkrvsd3bf71fhoa4frgc2eg6akb7.apps.googleusercontent.com"
+                             data-login_uri="https://localhost:7063/Member/ValidGoogleLogin"
+                             data-auto_prompt="false">
+                        </div>
+                    </div>
+                    <!------------------------------->
+
                     <form id="loginForm">
                         <div class="form-group">
                             <label for="Email" style="font-weight:900;">帳號:</label>
@@ -46,7 +62,6 @@
                             <a herf="#" asp-controller="Member" asp-action="Register" class="btn btn-primary" style="background-color:#FFA042; border:none; ">註冊</a>
                             <a herf="#" asp-controller="TProducts" asp-action="Index" class="btn btn-primary" style="background-color:#FFA042; border:none; ">後台</a>
                         </div>
-                        
                     </form>
                     <div id="errorMessage" class="mt-3 text-danger"></div>
                 </div>
@@ -76,6 +91,7 @@
 </form> *@
 
 @section Scripts{
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
         $(document).ready(function () {
             $('#loginForm').submit(function (event) {
