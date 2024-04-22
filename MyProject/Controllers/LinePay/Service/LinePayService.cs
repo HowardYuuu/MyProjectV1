@@ -17,10 +17,10 @@ namespace prjTravelPlatform_release.Areas.Customer.LinePay.Service
 		}
 
 		//金鑰端點放置區
-		private readonly string channelId = "20044845650";
-		private readonly string channelSecretKey = "02b88ff93c73397a9162d09c0414317e0";
+		//private readonly string channelId = "20044845650";
+		//private readonly string channelSecretKey = "02b88ff93c73397a9162d09c0414317e0";
 
-		private readonly string linePayBaseApiUrl = "https://sandbox-api-pay.line.me";
+		//private readonly string linePayBaseApiUrl = "https://sandbox-api-pay.line.me";
 		//金鑰端點放置區
 
 		public async Task<PaymentResponseDTO> SendPaymentRequest(PaymentRequestDTO DTO)
