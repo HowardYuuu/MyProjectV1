@@ -30,4 +30,8 @@ public partial class TProduct
     public bool? FOnSale { get; set; }
 
     public string FNote { get; set; }
+
+    public virtual ICollection<TShoppingCart> TShoppingCarts { get; set; } = new List<TShoppingCart>();
+
+    public virtual ICollection<TSizeQty> TSizeQties { get; set; } = new List<TSizeQty>();
 }

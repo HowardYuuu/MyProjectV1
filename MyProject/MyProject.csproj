@@ -13,7 +13,6 @@
     <Content Remove="Views\Home\about.cshtml" />
     <Content Remove="Views\Home\add-to-wishlist.cshtml" />
     <Content Remove="Views\Home\cart.cshtml" />
-    <Content Remove="Views\Home\checkout.cshtml" />
     <Content Remove="Views\Home\contact.cshtml" />
     <Content Remove="Views\Home\Index03.cshtml" />
     <Content Remove="Views\Home\men.cshtml" />

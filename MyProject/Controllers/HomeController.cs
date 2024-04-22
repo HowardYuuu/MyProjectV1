@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Components.Routing;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using MyProject.DTO.Order;
 using MyProject.Models;
 using MyProject.ViewModels;
 using System.Diagnostics;
@@ -11,13 +14,13 @@ namespace MyProject.Controllers
 	{
 		private readonly ILogger<HomeController> _logger;
 		private readonly IHttpContextAccessor _httpContextAccessor;
-		private readonly MyProjectContext _myProjectContext;
+		private readonly MyProjectContext _context;
 
 		public HomeController(ILogger<HomeController> logger, IHttpContextAccessor contextAccessor, MyProjectContext projectContext)
 		{
 			_logger = logger;
 			_httpContextAccessor = contextAccessor;
-			_myProjectContext = projectContext;
+			_context = projectContext;
 		}
 
 		#region 檢視Views========================================================
@@ -26,8 +29,8 @@ namespace MyProject.Controllers
 		{
 			ViewBag.CusID = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 			int customerID = Convert.ToInt32(ViewBag.CusID);
-			var p = await _myProjectContext.TProducts.Where(x => x.FOnSale == true).ToListAsync();
-			var s = await _myProjectContext.TSizeQties.ToListAsync();
+			var p = await _context.TProducts.Where(x => x.FOnSale == true).ToListAsync();
+			var s = await _context.TSizeQties.ToListAsync();
 			var ps = new ProSizeQtyViewModel
 			{
 				Product = p,
@@ -41,9 +44,9 @@ namespace MyProject.Controllers
 		{
 			ViewBag.CusID = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 			int customerID = Convert.ToInt32(ViewBag.CusID);
-			var s = await _myProjectContext.TShoppingCarts.Where(x => x.FCustomerId == customerID).ToListAsync();
-			var size = await _myProjectContext.TSizeQties.ToListAsync();
-			var product = await _myProjectContext.TProducts.ToListAsync();
+			var s = await _context.TShoppingCarts.Where(x => x.FCustomerId == customerID).ToListAsync();
+			var size = await _context.TSizeQties.ToListAsync();
+			var product = await _context.TProducts.ToListAsync();
 
 			var shop = new CartViewModel
 			{
@@ -80,6 +83,27 @@ namespace MyProject.Controllers
 			return View();
 		}
 
+		public async Task<IActionResult> CheckOut(int? id)
+		{
+			ViewBag.CusID = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+			int customerID = Convert.ToInt32(ViewBag.CusID);
+			var s = await _context.TShoppingCarts.Where(x => x.FCustomerId == customerID).ToListAsync();
+			var size = await _context.TSizeQties.ToListAsync();
+			var product = await _context.TProducts.ToListAsync();
+
+			var shop = new CartViewModel
+			{
+				Products = product,
+				Sizes = size,
+				ShoppingCarts = s
+			};
+
+
+
+
+			return View(shop);
+		}
+
 
 
 
@@ -103,7 +127,7 @@ namespace MyProject.Controllers
 			// 在此處進行資料庫查詢，根據產品ID（productId）和尺寸（size）檢索 FQuantity
 			// 假設您使用 Entity Framework，這可能會類似於以下代碼
 
-			var quantity = _myProjectContext.TSizeQties
+			var quantity = _context.TSizeQties
 				.Where(item => item.FProductId == productId && item.FSize == size)
 				.Select(item => item.FQuantity)
 				.FirstOrDefault();
@@ -125,7 +149,7 @@ namespace MyProject.Controllers
 			{
 				if (customerID != 0)
 				{
-					var existCartItem = _myProjectContext.TShoppingCarts.FirstOrDefault(x =>
+					var existCartItem = _context.TShoppingCarts.FirstOrDefault(x =>
 					x.FCustomerId == customerID &&
 					x.FProductId == productId &&
 					x.FSize == size
@@ -147,10 +171,10 @@ namespace MyProject.Controllers
 							FUnitPrice = price,
 							FQuantity = 1,
 						};
-						_myProjectContext.TShoppingCarts.Add(shoppingCart);
+						_context.TShoppingCarts.Add(shoppingCart);
 					}
 
-					_myProjectContext.SaveChanges();
+					_context.SaveChanges();
 
 					return Ok();
 				}
@@ -171,7 +195,7 @@ namespace MyProject.Controllers
 			ViewBag.CusID = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 			int customerID = Convert.ToInt32(ViewBag.CusID);
 
-			var p = _myProjectContext.TShoppingCarts.Where(s => s.FCustomerId == customerID).Count();
+			var p = _context.TShoppingCarts.Where(s => s.FCustomerId == customerID).Count();
 
 			return Ok(p);
 		}
@@ -184,12 +208,12 @@ namespace MyProject.Controllers
 				ViewBag.CusID = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 				int customerID = Convert.ToInt32(ViewBag.CusID);
 
-				var p = _myProjectContext.TShoppingCarts.FirstOrDefault(x => x.FSize == size && x.FCustomerId == customerID);
+				var p = _context.TShoppingCarts.FirstOrDefault(x => x.FSize == size && x.FCustomerId == customerID);
 
 				if (p != null)
 				{
-					_myProjectContext.TShoppingCarts.Remove(p);
-					_myProjectContext.SaveChanges(); // 確保變更已保存到數據庫
+					_context.TShoppingCarts.Remove(p);
+					_context.SaveChanges(); // 確保變更已保存到數據庫
 					return Json(new { success = true });
 				}
 				else
@@ -209,7 +233,7 @@ namespace MyProject.Controllers
 			ViewBag.CusID = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 			int customerID = Convert.ToInt32(ViewBag.CusID);
 
-			var shoppingCarts = _myProjectContext.TShoppingCarts
+			var shoppingCarts = _context.TShoppingCarts
 			.Where(x => x.FCustomerId == customerID)
 			.AsEnumerable(); // 轉換為記憶體中運行的操作
 
@@ -221,16 +245,16 @@ namespace MyProject.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult UpdateCartItemQuantity(decimal? size, int newQuantity)
+		public IActionResult UpdateCartItemQuantity(decimal? size, int newQuantity, int? productID)
 		{
 			ViewBag.CusID = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 			int customerID = Convert.ToInt32(ViewBag.CusID);
 
-			var cartItem = _myProjectContext.TShoppingCarts.FirstOrDefault(x => x.FSize == size && x.FCustomerId == customerID);
+			var cartItem = _context.TShoppingCarts.FirstOrDefault(x => x.FSize == size && x.FCustomerId == customerID&&x.FProductId == productID);
 			if (cartItem != null)
 			{
 				cartItem.FQuantity = newQuantity;
-				_myProjectContext.SaveChanges();
+				_context.SaveChanges();
 
 				return Json(new { success = true });
 			}
@@ -241,17 +265,17 @@ namespace MyProject.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult GetTotalAmount(decimal? size)
+		public IActionResult GetTotalAmount(decimal? size, int? productID)
 		{
 			ViewBag.CusID = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 			int customerID = Convert.ToInt32(ViewBag.CusID);
 
-			var shoppingCarts = _myProjectContext.TShoppingCarts
+			var shoppingCarts = _context.TShoppingCarts
 				.Where(x => x.FCustomerId == customerID)
 				.ToList(); // 或者 .ToListAsync()，根據您的情況
 
 			decimal totalAmount = shoppingCarts.Sum(x => Convert.ToDecimal(x.FSubtotal));
-			decimal? subtotal = shoppingCarts.FirstOrDefault(x => x.FSize == size)?.FSubtotal;
+			decimal? subtotal = shoppingCarts.FirstOrDefault(x => x.FSize == size&&x.FProductId == productID)?.FSubtotal;
 
 			ViewBag.TotalAmount = totalAmount;
 
@@ -262,9 +286,176 @@ namespace MyProject.Controllers
 			//return Json(new { totalAmount = totalAmount });
 		}
 
+		[HttpGet]
+		public IActionResult GetCartInfo()
+		{
+			ViewBag.CusID = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+			int customerID = Convert.ToInt32(ViewBag.CusID);
+
+			var shoppingCarts = _context.TShoppingCarts
+				.Where(x => x.FCustomerId == customerID)
+				.ToList(); // 或者 .ToListAsync()，根據您的情況
+
+			decimal totalAmount = shoppingCarts.Sum(x => Convert.ToDecimal(x.FSubtotal));
+
+
+			ViewBag.TotalAmount = totalAmount;
 
 
 
+			return Json(new { success = true, totalAmount = totalAmount });
+
+			//return Json(new { totalAmount = totalAmount });
+		}
+
+
+		[HttpPost]
+		public async Task<IActionResult> ConfirmPayment([FromBody] PaymentInfo paymentInfo)
+		{
+			ViewBag.CusID = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+			int customerID = Convert.ToInt32(ViewBag.CusID);
+			List<string> createdOrderIds = new List<string>(); // 用於存儲已創建訂單的 FOrderId
+			try
+			{
+				if (paymentInfo != null)
+				{
+					//ADO.NET
+					//string connectionString = "Data Source=.;Initial Catalog=MyProject;Integrated Security=True;TrustServerCertificate=true";
+					//using (var connection = new SqlConnection(connectionString))
+					//{
+					//	// 創建 SQL 命令
+					//	string sql = @"INSERT INTO TOrder (FCustomerId, FCusName, FCusEmail, FCusAddress, FCusPhone, FPaymentMethod, FTotalAmount, FOrderDate, FEndDate, FStatus)
+					//               VALUES (@CustomerId, @CusName, @CusEmail, @CusAddress, @CusPhone, @PaymentMethod, @TotalAmount, @OrderDate, @EndDate, @Status)";
+
+					//	SqlCommand command = new SqlCommand(sql, connection);
+
+					//	// 添加參數
+					//	command.Parameters.AddWithValue("@CustomerId", customerID);
+					//	command.Parameters.AddWithValue("@CusName", paymentInfo.Name);
+					//	command.Parameters.AddWithValue("@CusEmail", paymentInfo.Email);
+					//	command.Parameters.AddWithValue("@CusAddress", paymentInfo.Address);
+					//	command.Parameters.AddWithValue("@CusPhone", paymentInfo.Phone);
+					//	command.Parameters.AddWithValue("@PaymentMethod", paymentInfo.Payment);
+					//	command.Parameters.AddWithValue("@TotalAmount", paymentInfo.TotalAmount);
+					//	command.Parameters.AddWithValue("@OrderDate", DateTime.Now);
+					//	command.Parameters.AddWithValue("@EndDate", DateTime.Now.AddDays(3));
+					//	command.Parameters.AddWithValue("@Status", "未付款");
+
+					//	// 打開資料庫連接
+					//	connection.Open();
+					//	command.ExecuteNonQuery();
+					//	// 關閉資料庫連接
+					//	connection.Close(); // 或使用 connection.Dispose();
+
+					//}
+					int? maxOrderId = Convert.ToInt32(await _context.TOrders.Where(x => x.FCustomerId == customerID && x.FOrderDate == DateTime.Today).MaxAsync(o => o.FOrderId));
+					if (maxOrderId != null)
+					{
+						//新增訂單
+						TOrder order = new TOrder
+						{
+							FCustomerId = customerID,
+							FCusName = paymentInfo.Name,
+							FCusEmail = paymentInfo.Email,
+							FCusAddress = paymentInfo.Address,
+							FCusPhone = paymentInfo.Phone,
+							FPaymentMethod = paymentInfo.Payment,
+							FTotalAmount = paymentInfo.TotalAmount,
+							FOrderDate = DateTime.Now,
+							FEndDate = DateTime.Now.AddDays(3),
+							FStatus = "未付款"
+						};
+						_context.TOrders.Add(order);
+						await _context.SaveChangesAsync();
+
+						//新增訂單明細
+						var shoppingCarts = _context.TShoppingCarts
+						.Where(x => x.FCustomerId == customerID);
+						foreach (var s in shoppingCarts)
+						{
+							TOrderDetail orderDetail = new TOrderDetail()
+							{
+								FOrderId = order.FOrderId,
+								FProductId = s.FProductId,
+								FSize = s.FSize,
+								FQuantity = s.FQuantity,
+								FUnitPrice = s.FUnitPrice,
+								FSubTotal = s.FSubtotal
+							};
+							_context.TOrderDetails.Add(orderDetail);
+							_context.TShoppingCarts.Remove(s);
+							await _context.SaveChangesAsync();
+						}
+
+
+
+
+
+
+
+						createdOrderIds.Add(order.FOrderId);
+						return Ok(new { message = "付款確認成功" });
+
+					}
+					else
+					{
+						//新增訂單
+						int? newOrderId = maxOrderId + 1;
+						TOrder order = new TOrder
+						{
+							FOrderId = newOrderId.ToString(),
+							FCustomerId = customerID,
+							FCusName = paymentInfo.Name,
+							FCusEmail = paymentInfo.Email,
+							FCusAddress = paymentInfo.Address,
+							FCusPhone = paymentInfo.Phone,
+							FPaymentMethod = paymentInfo.Payment,
+							FTotalAmount = paymentInfo.TotalAmount,
+							FOrderDate = DateTime.Now,
+							FEndDate = DateTime.Now.AddDays(3),
+							FStatus = "未付款"
+						};
+						_context.TOrders.Add(order);
+						await _context.SaveChangesAsync();
+
+						//新增訂單明細
+						var shoppingCarts = _context.TShoppingCarts
+						.Where(x => x.FCustomerId == customerID);
+						foreach (var s in shoppingCarts)
+						{
+							TOrderDetail orderDetail = new TOrderDetail()
+							{
+								FOrderId = order.FOrderId,
+								FProductId = s.FProductId,
+								FSize = s.FSize,
+								FQuantity = s.FQuantity,
+								FUnitPrice = s.FUnitPrice,
+								FSubTotal = s.FSubtotal
+							};
+							_context.TOrderDetails.Add(orderDetail);
+							_context.TShoppingCarts.Remove(s);
+							await _context.SaveChangesAsync();
+						}
+
+
+						createdOrderIds.Add(order.FOrderId);
+						return Ok(new { message = "付款確認成功" });
+
+					}
+
+
+				}
+				// 在這裡處理後端資料庫存儲的邏輯
+				// 例如，將 paymentInfo 中的資料寫入到您的資料庫中
+
+				return BadRequest(new { message = "資料填寫未完全" });
+			}
+			catch (Exception ex)
+			{
+				// 處理錯誤
+				return StatusCode(500, new { error = "內部錯誤：" + ex.Message });
+			}
+		}
 
 		//[HttpPost]
 		//public IActionResult UpdateCartItemQuantity(decimal? size, int newQuantity)

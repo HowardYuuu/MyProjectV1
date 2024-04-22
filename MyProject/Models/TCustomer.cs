@@ -24,4 +24,8 @@ public partial class TCustomer
     public string FImgPath { get; set; }
 
     public bool FEnabled { get; set; }
+
+    public virtual ICollection<TOrder> TOrders { get; set; } = new List<TOrder>();
+
+    public virtual ICollection<TShoppingCart> TShoppingCarts { get; set; } = new List<TShoppingCart>();
 }

@@ -9,9 +9,15 @@ public partial class TOrderDetail
 {
     public int FId { get; set; }
 
-    public int? FOrderId { get; set; }
+    public string FOrderId { get; set; }
+
+    public int? FProductId { get; set; }
+
+    public decimal? FSize { get; set; }
 
     public int? FQuantity { get; set; }
+
+    public decimal? FUnitPrice { get; set; }
 
     public decimal? FSubTotal { get; set; }
 }

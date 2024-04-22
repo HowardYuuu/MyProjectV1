@@ -20,4 +20,8 @@ public partial class TShoppingCart
     public decimal? FUnitPrice { get; set; }
 
     public decimal? FSubtotal { get; set; }
+
+    public virtual TCustomer FCustomer { get; set; }
+
+    public virtual TProduct FProduct { get; set; }
 }

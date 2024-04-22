@@ -23,9 +23,13 @@ public partial class TOrder
 
     public DateTime? FOrderDate { get; set; }
 
-    public int? FTotalAmount { get; set; }
+    public DateTime? FEndDate { get; set; }
+
+    public decimal? FTotalAmount { get; set; }
 
     public string FPaymentMethod { get; set; }
 
     public string FStatus { get; set; }
+
+    public virtual TCustomer FCustomer { get; set; }
 }

@@ -14,4 +14,6 @@ public partial class TSizeQty
     public decimal? FSize { get; set; }
 
     public int? FQuantity { get; set; }
+
+    public virtual TProduct FProduct { get; set; }
 }

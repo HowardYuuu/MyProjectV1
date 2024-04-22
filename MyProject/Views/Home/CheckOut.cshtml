@@ -1,0 +1,300 @@
+﻿@using MyProject.ViewModels
+@model CartViewModel
+
+@{
+	ViewData["Title"] = "Check Out";
+}
+@section Styles{
+
+}
+
+<div class="colorlib-product">
+	<div class="container">
+		<div class="row row-pb-lg">
+			<div class="col-sm-10 offset-md-1">
+				<div class="process-wrap">
+					<div class="process text-center ">
+						<p><span>01</span></p>
+						<h3>購物車</h3>
+					</div>
+					<div class="process text-center active">
+						<p><span>02</span></p>
+						<h3>結帳確認</h3>
+					</div>
+					<div class="process text-center">
+						<p><span>03</span></p>
+						<h3>訂單完成</h3>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<form method="post" class="colorlib-form">
+					<h2 style="font-weight:900">結帳資訊</h2>
+					<div class="row">
+						@* <div class="col-md-12">
+							<div class="form-group">
+								<label for="country">Select Country</label>
+								<div class="form-field">
+									<i class="icon icon-arrow-down3"></i>
+									<select name="people" id="people" class="form-control">
+										<option value="#">Select country</option>
+										<option value="#">Alaska</option>
+										<option value="#">China</option>
+										<option value="#">Japan</option>
+										<option value="#">Korea</option>
+										<option value="#">Philippines</option>
+									</select>
+								</div>
+							</div>
+						</div> *@
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="fname">真實姓名</label>
+								<input type="text" id="name" class="form-control" placeholder="姓名">
+							</div>
+						</div>
+						@* <div class="col-md-6">
+							<div class="form-group">
+								<label for="lname">Last Name</label>
+								<input type="text" id="lname" class="form-control" placeholder="Your lastname">
+							</div>
+						</div> *@
+
+						@* <div class="col-md-12">
+							<div class="form-group">
+								<label for="companyname">Company Name</label>
+								<input type="text" id="companyname" class="form-control" placeholder="Company Name">
+							</div>
+						</div> *@
+
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="faddress">聯絡地址</label>
+								<input type="text" id="address" class="form-control" placeholder="地址">
+							</div>
+							<label for="faddress">取貨地址</label>
+							<btn class="btn btn-primary" id="selectStore" onclick="">選擇取貨門市</btn>
+							<div class="form-group">
+								<input type="text" id="address2" class="form-control" placeholder="地址">
+							</div>
+						</div>
+
+						@* <div class="col-md-12">
+							<div class="form-group">
+								<label for="companyname">Town/City</label>
+								<input type="text" id="towncity" class="form-control" placeholder="Town or City">
+							</div>
+						</div> *@
+
+						@* <div class="col-md-6">
+							<div class="form-group">
+								<label for="stateprovince">State/Province</label>
+								<input type="text" id="fname" class="form-control" placeholder="State Province">
+							</div>
+						</div> *@
+						@* <div class="col-md-6">
+							<div class="form-group">
+								<label for="lname">Zip/Postal Code</label>
+								<input type="text" id="zippostalcode" class="form-control" placeholder="Zip / Postal">
+							</div>
+						</div> *@
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="email">E-mail</label>
+								<input type="text" id="email" class="form-control" placeholder="email">
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="phone">電話號碼</label>
+								<input type="text" id="phone" class="form-control" placeholder="09-">
+							</div>
+						</div>
+
+						@* <div class="col-md-12">
+							<div class="form-group">
+								<div class="radio">
+									<label><input type="radio" name="optradio"> Create an Account? </label>
+									<label><input type="radio" name="optradio"> Ship to different address</label>
+								</div>
+							</div>
+						</div> *@
+					</div>
+				</form>
+			</div>
+
+			<div class="col-lg-12">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="cart-detail">
+							<h2 style="font-weight:900">總金額</h2>
+							<ul id="orderList">
+								<li>
+									@* <span>Subtotal</span> <span>$100.00</span> *@
+									<ul  id="productList">
+										@foreach (var s in Model.ShoppingCarts)
+										{
+											<li>
+												<span style="width:500px">@Model.Products.FirstOrDefault(x=>x.FProductId == s.FProductId).FProductName</span> 
+												<span>@s.FSize 號</span>
+												<span>x @s.FQuantity </span>
+												<span>$ @Convert.ToInt32(s.FSubtotal)</span>
+											</li>
+										}
+										@* <li><span>Product Name</span><span></span> <span>$78.00</span></li> *@
+									</ul>
+								</li>
+								<li><span>運費：</span> <span>$0.00</span></li>
+								<li><span>訂單總金額：$</span><span id="totalAmount">@Model.ShoppingCarts.Sum(x=>Convert.ToInt32(x.FSubtotal))</span></li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="w-100"></div>
+
+					<div class="col-md-12">
+						<div class="cart-detail">
+							<h2 style="font-weight:900">付款方式</h2>
+							@* <div class="form-group">
+								<div class="col-md-12">
+									<div class="radio">
+										<label><input type="radio" name="optradio"> Direct Bank Tranfer</label>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-md-12">
+									<div class="radio">
+										<label><input type="radio" name="optradio"> Check Payment</label>
+									</div>
+								</div>
+							</div> *@
+							@* <div class="form-group">
+								<div class="col-md-12">
+									<div class="radio">
+										<label><input type="radio" name="optradio">Line Pay</label>
+									</div>
+								</div>
+							</div> *@
+							<select class="form-select" aria-label="Default select example" id="selectPayment">
+								<option selected value="Linepay">LinePay</option>
+								<option value="Amount">取貨付款</option>
+							</select>
+							@* <div class="form-group">
+								<div class="col-md-12">
+									<div class="checkbox">
+										<label><input type="checkbox" value=""> I have read and accept the terms and conditions</label>
+									</div>
+								</div>
+							</div> *@
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 text-center">
+						<p><button class="btn btn-primary" id="confirmPaymentBtn">確認付款</button></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+@section Scripts {
+	<script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+	<script>
+		const createHiddenInput = (form, name, value) => {
+			const hiddenField = document.createElement('input');
+			hiddenField.type = 'hidden';
+			hiddenField.name = name;
+			hiddenField.value = value;
+			form.appendChild(hiddenField);
+		};
+		const handleGetStore = () => {
+			const form = document.createElement("form");
+			form.method = "POST";
+			form.action = "https://logistics-stage.ecpay.com.tw/Express/map"; // 這是測試的網址，文件上會寫正式的是哪個網址
+			createHiddenInput(form, "MerchantID", "2000132");
+			createHiddenInput(form, "LogisticsType", "CVS");
+			createHiddenInput(form, "LogisticsSubType", "UNIMART");
+			createHiddenInput(form, "IsCollection", "Y");
+			createHiddenInput(form, "ServerReplyURL", "https://localhost:7063/home/checkout");
+			document.body.appendChild(form);
+			form.submit();
+		}
+		document.getElementById("selectStore").addEventListener("click", handleGetStore);
+
+
+
+
+
+		document.getElementById("confirmPaymentBtn").addEventListener("click", confirmPayment);
+		function confirmPayment() {
+
+			var selectPayment = document.getElementById("selectPayment").value;
+			// 獲取前端資訊
+			const formData = {
+				// 這裡列出您要傳送到後端的所有欄位和值
+				Name: document.getElementById("name").value,
+				Address: document.getElementById("address").value,
+				Address2: document.getElementById("address2").value,
+				Email: document.getElementById("email").value,
+				Phone: document.getElementById("phone").value,
+				Payment: selectPayment,
+				TotalAmount: parseFloat(document.getElementById("totalAmount").innerText),
+
+				// 可以根據需要添加更多的欄位
+			};
+
+			// 使用 Fetch API 將資料發送到後端
+			const url= '@Url.Action("confirmPayment", "Home")';
+			fetch(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(formData)
+			})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Network response was not ok');
+					}
+					return response.json();
+				})
+				.then(data => {
+					// 處理後端的回應，例如顯示成功訊息或重新導向到其他頁面
+					console.log('後端回應：', data);
+					Swal.fire({
+						title: '結帳完成',
+						text: '將自動回到首頁......',
+						icon: 'success',
+						showConfirmButton: false,
+						timer: 1500 // 設定提示框顯示時間，單位為毫秒
+					});
+				})
+				.catch(error => {
+					// 處理錯誤
+					console.error('發生錯誤：', error);
+					Swal.fire({
+						title: '購物車目前為空',
+						text: '將自動回到首頁......',
+						icon: 'error',
+						showConfirmButton: false,
+						timer: 1500 // 設定提示框顯示時間，單位為毫秒
+					});
+				});
+		}
+
+
+	</script>
+}
+
+
+
+

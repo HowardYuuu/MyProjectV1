@@ -86,7 +86,7 @@ public partial class MyProjectContext : DbContext
         {
             entity.HasKey(e => e.FOrderId);
 
-            entity.ToTable("tOrders", tb => tb.HasTrigger("trg_SetOrderID"));
+            entity.ToTable("tOrders");
 
             entity.Property(e => e.FOrderId)
                 .HasMaxLength(50)
@@ -105,6 +105,9 @@ public partial class MyProjectContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("fCusPhone");
             entity.Property(e => e.FCustomerId).HasColumnName("fCustomerID");
+            entity.Property(e => e.FEndDate)
+                .HasColumnType("datetime")
+                .HasColumnName("fEndDate");
             entity.Property(e => e.FId)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("fId");
@@ -117,7 +120,13 @@ public partial class MyProjectContext : DbContext
             entity.Property(e => e.FStatus)
                 .HasMaxLength(50)
                 .HasColumnName("fStatus");
-            entity.Property(e => e.FTotalAmount).HasColumnName("fTotalAmount");
+            entity.Property(e => e.FTotalAmount)
+                .HasColumnType("money")
+                .HasColumnName("fTotalAmount");
+
+            entity.HasOne(d => d.FCustomer).WithMany(p => p.TOrders)
+                .HasForeignKey(d => d.FCustomerId)
+                .HasConstraintName("FK_tOrders_tCustomer");
         });
 
         modelBuilder.Entity<TOrderDetail>(entity =>
@@ -126,14 +135,21 @@ public partial class MyProjectContext : DbContext
 
             entity.ToTable("tOrderDetails");
 
-            entity.Property(e => e.FId)
-                .ValueGeneratedNever()
-                .HasColumnName("fId");
-            entity.Property(e => e.FOrderId).HasColumnName("fOrderID");
+            entity.Property(e => e.FId).HasColumnName("fId");
+            entity.Property(e => e.FOrderId)
+                .HasMaxLength(50)
+                .HasColumnName("fOrderID");
+            entity.Property(e => e.FProductId).HasColumnName("fProductID");
             entity.Property(e => e.FQuantity).HasColumnName("fQuantity");
+            entity.Property(e => e.FSize)
+                .HasColumnType("decimal(3, 1)")
+                .HasColumnName("fSize");
             entity.Property(e => e.FSubTotal)
                 .HasColumnType("money")
                 .HasColumnName("fSubTotal");
+            entity.Property(e => e.FUnitPrice)
+                .HasColumnType("money")
+                .HasColumnName("fUnitPrice");
         });
 
         modelBuilder.Entity<TProduct>(entity =>
@@ -195,6 +211,14 @@ public partial class MyProjectContext : DbContext
             entity.Property(e => e.FUnitPrice)
                 .HasColumnType("money")
                 .HasColumnName("fUnitPrice");
+
+            entity.HasOne(d => d.FCustomer).WithMany(p => p.TShoppingCarts)
+                .HasForeignKey(d => d.FCustomerId)
+                .HasConstraintName("FK_tShoppingCart_tCustomer");
+
+            entity.HasOne(d => d.FProduct).WithMany(p => p.TShoppingCarts)
+                .HasForeignKey(d => d.FProductId)
+                .HasConstraintName("FK_tShoppingCart_tProducts");
         });
 
         modelBuilder.Entity<TSizeQty>(entity =>
@@ -211,6 +235,10 @@ public partial class MyProjectContext : DbContext
             entity.Property(e => e.FSize)
                 .HasColumnType("decimal(3, 1)")
                 .HasColumnName("fSize");
+
+            entity.HasOne(d => d.FProduct).WithMany(p => p.TSizeQties)
+                .HasForeignKey(d => d.FProductId)
+                .HasConstraintName("FK_tSizeQty_tProducts");
         });
 
         modelBuilder.Entity<VproductSizeQty>(entity =>

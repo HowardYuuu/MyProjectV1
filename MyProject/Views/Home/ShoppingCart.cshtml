@@ -24,7 +24,7 @@
 					</div>
 					<div class="process text-center">
 						<p><span>02</span></p>
-						<h3>結帳資訊</h3>
+						<h3>確認結帳</h3>
 					</div>
 					<div class="process text-center">
 						<p><span>03</span></p>
@@ -57,6 +57,7 @@
 				</div>
 				@foreach (var item in Model.ShoppingCarts)
 				{
+					<input class="" id="@item.FSize _@item.FProductId" value="@item.FProductId" style="display:none">
 					<div class="product-cart d-flex">
 						<div class="one-forth" style="">
 							@* <div class="product-img" style="background-image: url(images/NoImage.png);">
@@ -92,7 +93,7 @@
 						</div>
 						<div class="one-eight text-center">
 							<div class="display-tc">
-								<span class="price" id="subtotal_@item.FSize">@Convert.ToInt32(item.FSubtotal)</span>
+								<span class="price" id="subtotal_@item.FSize _@item.FProductId">@Convert.ToInt32(item.FSubtotal)</span>
 							</div>
 						</div>
 						<div class="one-eight text-center">
@@ -129,7 +130,7 @@
 
 		<div class="col-md-4">
 			<div class="row">
-				<div class="col-sm-12">
+				@* <div class="col-sm-12">
 					<form action="#">
 						<div class="row form-group">
 							<div class="col-sm-12">
@@ -140,9 +141,9 @@
 							</div>
 						</div>
 					</form>
-				</div>
+				</div> *@
 				<div class="col-sm-12">
-					<input type="submit" value="前往結帳" class="btn btn-primary btn-block">
+					<a asp-controller="Home" asp-action="CheckOut" type="submit" class="btn btn-primary btn-block">前往結帳</a>
 				</div>
 			</div>
 		</div>
@@ -232,18 +233,19 @@
 		//=========================================================
 
 
-		//控制數量
-		function updateQuantity(size, newQuantity) {
+		//更新數量
+		function updateQuantity(size, newQuantity, ProducrID) {
 			var Size = parseFloat(size);
+			// var ProducrID = document.getElementById('ProductID').value;
 			$.ajax({
 				url: '@Url.Action("UpdateCartItemQuantity", "Home")',
 				type: 'POST',
 				dataType: 'json',
-				data: { size: Size, newQuantity: newQuantity },
+				data: { size: Size, newQuantity: newQuantity, productID: ProducrID },
 				success: function (result) {
 					if (result.success) {
 						// 更新購物車總金額
-						calculateTotalAmount(size);
+						calculateTotalAmount(size, ProducrID);
 					} else {
 						alert('Failed to update quantity.');
 					}
@@ -258,32 +260,36 @@
 			console.log("Increasing quantity for size: " + size);
 			var quantityInput = document.getElementById("quantity_" + size);
 			var currentValue = parseInt(quantityInput.value);
+			var ProducrID = document.getElementById(size).value;
 			if (currentValue > 1) {
 				quantityInput.value = currentValue - 1;
 				var newQuantity = quantityInput.value;
-				updateQuantity(size, newQuantity);
+				updateQuantity(size, newQuantity, ProducrID);
 			}
 		}
 		function increaseQuantity(size) {
 			console.log("Increasing quantity for size: " + size);
 			var quantityInput = document.getElementById("quantity_" + size);
 			var currentValue = parseInt(quantityInput.value);
+			var ProducrID = document.getElementById(size).value;
 			if (currentValue < 100) {
 				quantityInput.value = currentValue + 1;
 				var newQuantity = quantityInput.value;
-				updateQuantity(size, newQuantity);
+				updateQuantity(size, newQuantity, ProducrID);
 			}
 		}
 
-		function calculateTotalAmount(size) {
+		function calculateTotalAmount(size, productID) {
+			
 			$.ajax({
 				url: '@Url.Action("GetTotalAmount", "Home")',
 				type: 'GET',
 				data: { size: size },
 				success: function (result) {
-					var unitPriceSelector = '#subtotal_' + size;
+					var unitPriceSelector = `#subtotal_${size}`;
+					console.log(unitPriceSelector);
 					$('#totalAmount').text('$' + result.totalAmount.toFixed(2));
-					$(unitPriceSelector).text(result.subtotal.toFixed(2));
+					$(unitPriceSelector).text(result.subtotal);
 				},
 				error: function () {
 					alert('Failed to calculate total amount.');
