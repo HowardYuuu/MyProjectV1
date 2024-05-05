@@ -132,6 +132,7 @@
 					<div class="col-md-12">
 						<div class="cart-detail">
 							<h2 style="font-weight:900">總金額</h2>
+							<input id="orderID" value="@ViewBag.OrderID" style="display:none" />
 							<ul id="orderList">
 								<li>
 									@* <span>Subtotal</span> <span>$100.00</span> *@
@@ -196,7 +197,7 @@
 				</div>
 				<div class="row">
 					<div class="col-md-12 text-center">
-						<p><button class="btn btn-primary" id="confirmPaymentBtn">確認付款</button></p>
+						<p><button class="btn btn-primary" id="confirmPaymentBtn" onclick="confirmPay()">確認付款</button></p>
 					</div>
 				</div>
 			</div>
@@ -292,6 +293,49 @@
 		}
 
 
+
+		let baseLoginPayUrl = 'https://localhost:7063/api/LinePay/';
+		let transactionId = "";
+		let orderId = document.getElementById('orderID').value;
+		let totalPrice = document.getElementById('totalAmount').innerText;
+		let totalPriceFormat = Number(totalPrice.replace(/,/g, ''));
+		const btnPay = document.getElementById('confirmPaymentBtn');
+
+		window.onload = () => {
+			// 取出 query parameter 中的 transactionId & orderId
+			const params = new Proxy(new URLSearchParams(window.location.search), {
+				get: (searchParams, prop) => searchParams.get(prop),
+			});
+
+			transactionId = params.transactionId;
+			orderId = params.orderId;
+		}
+
+		function confirmPay() {
+			// 交易訂單假資料
+			payment = {
+				amount: totalPrice,
+				currency: "TWD",
+			};
+			//  送出確認交易
+			$.post({
+				url: baseLoginPayUrl + `Confirm?transactionId=${transactionId}&orderId=${orderId}`,
+				dataType: "json",
+				contentType: "application/json",
+				data: JSON.stringify(payment),
+				success: (res) => {
+					$("#paymentStatus").text("交易狀態 : 成功")
+					console.log(res);
+
+					setTimeout(() => {
+						window.location = "https://cccf-61-63-154-173.jp.ngrok.io/products.html";
+					}, 2000);
+				},
+				error: (err) => {
+					console.log(err);
+				}
+			})
+		}
 	</script>
 }
 

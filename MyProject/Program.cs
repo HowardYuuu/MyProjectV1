@@ -27,6 +27,7 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddHttpClient();
 
 builder.Services.AddCors(option =>
 {

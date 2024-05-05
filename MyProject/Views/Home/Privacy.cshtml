@@ -1,6 +1,40 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+	ViewData["Title"] = "測試頁面";
+}
+@section Styles{
+
 }
 <h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+
+
+<h1>費波納契數列</h1>
+<h2>輸入想查詢的第幾位數字順位(第一位順位為0)</h2>
+<h2>第幾位：
+	<input type="text" id="number" />
+	<button id="searchBtn">查詢</button>
+</h2>
+<h2>結果：<input type="text" id="solution" readonly /></h2>
+<p id="solutionList"></p>
+@section Scripts{
+	<script>
+
+        $(document).ready(function () {
+            $("#searchBtn").click(function () {
+                var number = $('#number').val();
+                $.ajax({
+                    url: '/Home/Calculation',
+                    type: 'POST',
+                    data: { n: number },
+                    success: function (response) {
+                        $('#solution').val(response.number);
+                        $('#solutionList').text(response.numberList);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('錯誤:', error);
+                    }
+                });
+            });
+        });
+	</script>
+}
