@@ -324,40 +324,6 @@ namespace MyProject.Controllers
             {
                 if (paymentInfo != null)
                 {
-                    //ADO.NET
-                    //string connectionString = "Data Source=.;Initial Catalog=MyProject;Integrated Security=True;TrustServerCertificate=true";
-                    //using (var connection = new SqlConnection(connectionString))
-                    //{
-                    //	// 創建 SQL 命令
-                    //	string sql = @"INSERT INTO TOrder (FCustomerId, FCusName, FCusEmail, FCusAddress, FCusPhone, FPaymentMethod, FTotalAmount, FOrderDate, FEndDate, FStatus)
-                    //               VALUES (@CustomerId, @CusName, @CusEmail, @CusAddress, @CusPhone, @PaymentMethod, @TotalAmount, @OrderDate, @EndDate, @Status)";
-
-                    //	SqlCommand command = new SqlCommand(sql, connection);
-
-                    //	// 添加參數
-                    //	command.Parameters.AddWithValue("@CustomerId", customerID);
-                    //	command.Parameters.AddWithValue("@CusName", paymentInfo.Name);
-                    //	command.Parameters.AddWithValue("@CusEmail", paymentInfo.Email);
-                    //	command.Parameters.AddWithValue("@CusAddress", paymentInfo.Address);
-                    //	command.Parameters.AddWithValue("@CusPhone", paymentInfo.Phone);
-                    //	command.Parameters.AddWithValue("@PaymentMethod", paymentInfo.Payment);
-                    //	command.Parameters.AddWithValue("@TotalAmount", paymentInfo.TotalAmount);
-                    //	command.Parameters.AddWithValue("@OrderDate", DateTime.Now);
-                    //	command.Parameters.AddWithValue("@EndDate", DateTime.Now.AddDays(3));
-                    //	command.Parameters.AddWithValue("@Status", "未付款");
-
-                    //	// 打開資料庫連接
-                    //	connection.Open();
-                    //	command.ExecuteNonQuery();
-                    //	// 關閉資料庫連接
-                    //	connection.Close(); // 或使用 connection.Dispose();
-
-                    //}
-                    //int? maxOrderId = Convert.ToInt32(
-                    //	_context.TOrders.Where(x => x.FCustomerId == customerID && x.FOrderDate == DateTime.Today)
-                    //	.OrderByDescending(x => x.FOrderId).Select(x => x.FOrderId).FirstOrDefault());
-                    //if (maxOrderId == 0)
-                    //{
                     //新增訂單
                     TOrder order = new TOrder
                     {
