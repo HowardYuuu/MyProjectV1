@@ -8,6 +8,7 @@ using MyProject.Data;
 using MyProject.Models;
 using System.Web;
 using Microsoft.AspNetCore.DataProtection;
+using MyProject.Controllers.LinePay.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,6 +68,9 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+// 添加 NonceMiddleware，必須在添加 Razor Pages 或 MVC 之前
+app.UseMiddleware<NonceMiddleWare>();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

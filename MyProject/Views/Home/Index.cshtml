@@ -262,7 +262,7 @@
 
 @section Scripts {
 
-	<script>
+	<script nonce="@Context.Items["Nonce"]">
 		//顯示size對應的庫存
 		$(document).ready(function () {
 			// 尺寸選擇框改變時和頁面加載時都調用 updateQuantity 函數

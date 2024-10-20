@@ -64,7 +64,7 @@
 
 							<div class="col-sm-7 col-md-9">
 								<div id="colorlib-logo"><a asp-controller="Home" asp-action="Index">
-									<img src="~/images/iconLogo03.png" style="width:150px;" />
+									<img src="~/images/iconLogo02.png" style="width:150px;" />
 								</a></div>
 							</div>
 
@@ -85,7 +85,7 @@
 											</a>
 											<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" style="">
 												<li><a class="dropdown-item">嗨！@_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name)</a></li>
-												<li><a class="dropdown-item" href="#!">設定</a></li>
+												<li><a class="dropdown-item" asp-controller="TProducts" asp-action="Index">後台Demo</a></li>
 												<li><hr class="dropdown-divider"></li>
 												<li><a class="dropdown-item" href="#!" id="logout">登出</a></li>
 											</ul>
@@ -109,7 +109,7 @@
 												</a>
 											<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 												<li><a class="dropdown-item" asp-controller="Member" asp-action="Login">登入</a></li>
-												<li><a class="dropdown-item" href="#!">設定</a></li>
+												<li><a class="dropdown-item" asp-controller="TProducts" asp-action="Index">後台Demo</a></li>
 												@* <li><hr class="dropdown-divider"></li> *@
 												@* <li><a class="dropdown-item" href="#!" id="logout">登出</a></li> *@
 												@* <li><a class="dropdown-item" href="#!">登出</a></li> *@
@@ -147,6 +147,7 @@
 									<li><a href="women.cshtml">女性鞋款</a></li>
 									<li><a href="about.cshtml">關於</a></li>
 									<li><a href="contact.cshtml">聯絡</a></li>
+								<li><a asp-controller="TProducts" asp-action="Index">後台Demo</a></li>
 								@if (User.Identity != null && User.Identity.IsAuthenticated)
 								{
 									<li class="cart">
@@ -368,7 +369,7 @@
 	<!-- Main -->
 	
 	<script src="~/js/main.js"></script>
-	<script>
+	<script nonce="@ViewData["Nonce"]">
 		let IsClaim = false;
 		let claimId = '@claimId';
 		let claimName = '@claimName';
