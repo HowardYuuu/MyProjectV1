@@ -69,8 +69,6 @@ else
     app.UseHsts();
 }
 
-// 添加 NonceMiddleware，必須在添加 Razor Pages 或 MVC 之前
-app.UseMiddleware<NonceMiddleWare>();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -83,7 +81,8 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-
+// 添加 NonceMiddleware，必須在添加 Razor Pages 或 MVC 之前
+app.UseMiddleware<NonceMiddleWare>();
 
 //app.MapControllerRoute(
 //    name: "admin",
