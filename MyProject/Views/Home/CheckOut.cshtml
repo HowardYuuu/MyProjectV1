@@ -132,7 +132,6 @@
 					<div class="col-md-12">
 						<div class="cart-detail">
 							<h2 style="font-weight:900">總金額</h2>
-							<input id="orderID" value="@ViewBag.OrderID" style="display:none" />
 							<ul id="orderList">
 								<li>
 									@* <span>Subtotal</span> <span>$100.00</span> *@
@@ -237,24 +236,47 @@
 
 		document.getElementById("confirmPaymentBtn").addEventListener("click", confirmPayment);
 		function confirmPayment() {
-
 			var selectPayment = document.getElementById("selectPayment").value;
+			
+			// 驗證表單欄位
+			const name = document.getElementById("name").value;
+			const address = document.getElementById("address").value;
+			const email = document.getElementById("email").value;
+			const phone = document.getElementById("phone").value;
+
+			if (!name || !address || !email || !phone) {
+				Swal.fire({
+					title: '請填寫完整資訊',
+					text: '請確認所有必填欄位都已填寫',
+					icon: 'warning',
+					confirmButtonText: '確定'
+				});
+				return;
+			}
+
 			// 獲取前端資訊
 			const formData = {
-				// 這裡列出您要傳送到後端的所有欄位和值
-				Name: document.getElementById("name").value,
-				Address: document.getElementById("address").value,
+				Name: name,
+				Address: address,
 				Address2: document.getElementById("address2").value,
-				Email: document.getElementById("email").value,
-				Phone: document.getElementById("phone").value,
+				Email: email,
+				Phone: phone,
 				Payment: selectPayment,
-				TotalAmount: parseFloat(document.getElementById("totalAmount").innerText),
-
-				// 可以根據需要添加更多的欄位
+				TotalAmount: parseFloat(document.getElementById("totalAmount").innerText)
 			};
 
+			// 顯示載入中
+			Swal.fire({
+				title: '處理中...',
+				text: '請稍候',
+				allowOutsideClick: false,
+				didOpen: () => {
+					Swal.showLoading();
+				}
+			});
+
 			// 使用 Fetch API 將資料發送到後端
-			const url= '@Url.Action("confirmPayment", "Home")';
+			const url = '@Url.Action("ConfirmPayment", "Home")';
 			fetch(url, {
 				method: 'POST',
 				headers: {
@@ -262,79 +284,56 @@
 				},
 				body: JSON.stringify(formData)
 			})
-				.then(response => {
-					if (!response.ok) {
-						throw new Error('Network response was not ok');
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				return response.json();
+			})
+			.then(data => {
+				console.log('後端回應：', data);
+				
+				if (data.success) {
+					if (data.paymentUrl) {
+						// LINE Pay 付款，導向到 LINE Pay 頁面
+						Swal.fire({
+							title: '導向付款頁面',
+							text: '即將前往 LINE Pay 付款...',
+							icon: 'info',
+							showConfirmButton: false,
+							timer: 1500
+						}).then(() => {
+							window.location.href = data.paymentUrl;
+						});
+					} else {
+						// 取貨付款，直接完成
+						Swal.fire({
+							title: '訂單建立成功！',
+							text: '訂單編號：' + data.orderId,
+							icon: 'success',
+							confirmButtonText: '確定'
+						}).then(() => {
+							window.location.href = '@Url.Action("PaymentResult", "Home")?success=true&orderId=' + data.orderId;
+						});
 					}
-					return response.json();
-				})
-				.then(data => {
-					// 處理後端的回應，例如顯示成功訊息或重新導向到其他頁面
-					console.log('後端回應：', data);
+				} else {
 					Swal.fire({
-						title: '結帳完成',
-						text: '將自動回到首頁......',
-						icon: 'success',
-						showConfirmButton: false,
-						timer: 1500 // 設定提示框顯示時間，單位為毫秒
-					});
-				})
-				.catch(error => {
-					// 處理錯誤
-					console.error('發生錯誤：', error);
-					Swal.fire({
-						title: '購物車目前為空',
-						text: '將自動回到首頁......',
+						title: '訂單建立失敗',
+						text: data.message || '發生未知錯誤',
 						icon: 'error',
-						showConfirmButton: false,
-						timer: 1500 // 設定提示框顯示時間，單位為毫秒
+						confirmButtonText: '確定'
 					});
-				});
-		}
-
-
-
-		let baseLoginPayUrl = 'https://localhost:7063/api/LinePay/';
-		let transactionId = "";
-		let orderId = document.getElementById('orderID').value;
-		let totalPrice = document.getElementById('totalAmount').innerText;
-		let totalPriceFormat = Number(totalPrice.replace(/,/g, ''));
-		const btnPay = document.getElementById('confirmPaymentBtn');
-
-		window.onload = () => {
-			// 取出 query parameter 中的 transactionId & orderId
-			const params = new Proxy(new URLSearchParams(window.location.search), {
-				get: (searchParams, prop) => searchParams.get(prop),
-			});
-
-			transactionId = params.transactionId;
-			orderId = params.orderId;
-		}
-
-		function confirmPay() {
-			// 交易訂單假資料
-			payment = {
-				amount: totalPrice,
-				currency: "TWD",
-			};
-			//  送出確認交易
-			$.post({
-				url: baseLoginPayUrl + `Confirm?transactionId=${transactionId}&orderId=${orderId}`,
-				dataType: "json",
-				contentType: "application/json",
-				data: JSON.stringify(payment),
-				success: (res) => {
-					$("#paymentStatus").text("交易狀態 : 成功")
-					console.log(res);
-
-					setTimeout(() => {
-						window.location = "https://cccf-61-63-154-173.jp.ngrok.io/products.html";
-					}, 2000);
-				},
-				error: (err) => {
-					console.log(err);
 				}
 			})
+			.catch(error => {
+				console.error('發生錯誤：', error);
+				Swal.fire({
+					title: '發生錯誤',
+					text: '請稍後再試或聯繫客服',
+					icon: 'error',
+					confirmButtonText: '確定'
+				});
+			});
 		}
 	</script>
 }

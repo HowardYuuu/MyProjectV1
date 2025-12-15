@@ -10,6 +10,8 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using prjTravelPlatform_release.Areas.Customer.LinePay.DTO;
+using prjTravelPlatform_release.Areas.Customer.LinePay.Service;
 
 namespace MyProject.Controllers
 {
@@ -319,7 +321,6 @@ namespace MyProject.Controllers
         {
             ViewBag.CusID = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             int customerID = Convert.ToInt32(ViewBag.CusID);
-            List<string> createdOrderIds = new List<string>(); // 用於存儲已創建訂單的 FOrderId
             try
             {
                 if (paymentInfo != null)
@@ -339,13 +340,13 @@ namespace MyProject.Controllers
                         FEndDate = DateTime.Now.AddDays(3),
                         FStatus = "未付款"
                     };
-                    ViewBag.OrderID = order.FOrderId;
-					_context.TOrders.Add(order);
+                    _context.TOrders.Add(order);
                     await _context.SaveChangesAsync();
 
                     //新增訂單明細
                     var shoppingCarts = _context.TShoppingCarts
                     .Where(x => x.FCustomerId == customerID).ToList();
+                    
                     foreach (var s in shoppingCarts)
                     {
                         TOrderDetail orderDetail = new TOrderDetail()
@@ -358,98 +359,81 @@ namespace MyProject.Controllers
                             FSubTotal = s.FSubtotal
                         };
                         _context.TOrderDetails.Add(orderDetail);
-                        var Carts = _context.TShoppingCarts
-                   .Where(x => x.FCustomerId == customerID).ToList();
-                        _context.TShoppingCarts.RemoveRange(Carts);
-
                     }
+                    
+                    // 清空購物車
+                    _context.TShoppingCarts.RemoveRange(shoppingCarts);
                     await _context.SaveChangesAsync();
 
+                    // 如果選擇 LINE Pay，發起付款請求
+                    if (paymentInfo.Payment == "Linepay")
+                    {
+                        var linePayService = new LinePayService();
+                        
+                        // 準備商品列表
+                        var products = new List<LinePayProductDTO>();
+                        var orderDetails = _context.TOrderDetails
+                            .Where(x => x.FOrderId == order.FOrderId)
+                            .ToList();
+                        
+                        foreach (var detail in orderDetails)
+                        {
+                            var product = _context.TProducts.FirstOrDefault(p => p.FProductId == detail.FProductId);
+                            products.Add(new LinePayProductDTO
+                            {
+                                Name = product?.FProductName ?? "商品",
+                                Quantity = detail.FQuantity ?? 1,
+                                Price = Convert.ToInt32(detail.FUnitPrice ?? 0)
+                            });
+                        }
 
+                        // 建立 LINE Pay 付款請求
+                        var paymentRequest = new PaymentRequestDTO
+                        {
+                            Amount = Convert.ToInt32(paymentInfo.TotalAmount ?? 0),
+                            Currency = "TWD",
+                            OrderId = order.FOrderId,
+                            Packages = new List<PackageDTO>
+                            {
+                                new PackageDTO
+                                {
+                                    Id = order.FOrderId,
+                                    Amount = Convert.ToInt32(paymentInfo.TotalAmount ?? 0),
+                                    Name = "訂單商品",
+                                    Products = products
+                                }
+                            },
+                            RedirectUrls = new RedirectUrlsDTO
+                            {
+                                ConfirmUrl = $"{Request.Scheme}://{Request.Host}/Home/LinePayConfirm",
+                                CancelUrl = $"{Request.Scheme}://{Request.Host}/Home/LinePayCancel"
+                            }
+                        };
 
-
-					return Ok(new { message = "付款確認成功" });
-
-					//createdOrderIds.Add(order.FOrderId);
-					////return Ok(new { message = "付款確認成功" });
-
-					//var orderId = order.FOrderId;
-					//var totalAmount = paymentInfo.TotalAmount;
-
-					//// 組合要傳送的資料
-					//var requestData = new
-					//{
-					//    orderId,
-					//    totalAmount
-					//};
-
-					//var jsonRequestData = JsonSerializer.Serialize(requestData);
-
-					//// 發送請求
-					//var response = await _httpClient.PostAsync("https://localhost:7063/api/LinePay/",
-					//                                            new StringContent(jsonRequestData, Encoding.UTF8, "application/json"));
-
-					//// 檢查響應是否成功
-					//response.EnsureSuccessStatusCode();
-
-					//// 讀取 API 返回的內容
-					//var responseBody = await response.Content.ReadAsStringAsync();
-
-					//// 解析 JSON 響應
-					//var responseData = JsonSerializer.Deserialize<dynamic>(responseBody);
-
-					//// 返回支付結果或其他相關資訊
-					//return responseData.ToString();
-
-					//               }
-					//else
-					//{
-					//	//新增訂單
-					//	//int? newOrderId = maxOrderId + 1;
-					//	TOrder order = new TOrder
-					//	{
-					//		//FOrderId = newOrderId.ToString(),
-					//		FCustomerId = customerID,
-					//		FCusName = paymentInfo.Name,
-					//		FCusEmail = paymentInfo.Email,
-					//		FCusAddress = paymentInfo.Address,
-					//		FCusPhone = paymentInfo.Phone,
-					//		FPaymentMethod = paymentInfo.Payment,
-					//		FTotalAmount = paymentInfo.TotalAmount,
-					//		FOrderDate = DateTime.Now,
-					//		FEndDate = DateTime.Now.AddDays(3),
-					//		FStatus = "未付款"
-					//	};
-					//	_context.TOrders.Add(order);
-					//	await _context.SaveChangesAsync();
-
-					//	//新增訂單明細
-					//	var shoppingCarts = _context.TShoppingCarts
-					//	.Where(x => x.FCustomerId == customerID).ToList();
-					//	foreach (var s in shoppingCarts)
-					//	{
-					//		TOrderDetail orderDetail = new TOrderDetail()
-					//		{
-					//			FOrderId = order.FOrderId,
-					//			FProductId = s.FProductId,
-					//			FSize = s.FSize,
-					//			FQuantity = s.FQuantity,
-					//			FUnitPrice = s.FUnitPrice,
-					//			FSubTotal = s.FSubtotal
-					//		};
-					//		_context.TOrderDetails.Add(orderDetail);
-					//		  _context.TShoppingCarts.RemoveRange(shoppingCarts);
-
-					//	}
-					//                 await _context.SaveChangesAsync();
-
-					//                   createdOrderIds.Add(order.FOrderId);
-					//	return Ok(new { message = "付款確認成功" });
-
-					//}
-
-
-				}
+                        var paymentResponse = await linePayService.SendPaymentRequest(paymentRequest);
+                        
+                        if (paymentResponse.ReturnCode == "0000")
+                        {
+                            // 返回 LINE Pay 付款網址
+                            return Ok(new 
+                            { 
+                                success = true, 
+                                paymentUrl = paymentResponse.Info.PaymentUrl.Web,
+                                transactionId = paymentResponse.Info.TransactionId,
+                                orderId = order.FOrderId
+                            });
+                        }
+                        else
+                        {
+                            return BadRequest(new { message = "LINE Pay 付款請求失敗：" + paymentResponse.ReturnMessage });
+                        }
+                    }
+                    else
+                    {
+                        // 取貨付款，直接完成
+                        return Ok(new { success = true, message = "訂單建立成功", orderId = order.FOrderId });
+                    }
+                }
                 // 在這裡處理後端資料庫存儲的邏輯
                 // 例如，將 paymentInfo 中的資料寫入到您的資料庫中
 
@@ -633,6 +617,86 @@ namespace MyProject.Controllers
 		//		return BadRequest();
 		//	}
 		//}
+
+		// LINE Pay 確認付款回調
+		[HttpGet]
+		public async Task<IActionResult> LinePayConfirm(string transactionId, string orderId)
+		{
+			try
+			{
+				// 查詢訂單
+				var order = await _context.TOrders.FirstOrDefaultAsync(o => o.FOrderId == orderId);
+				if (order == null)
+				{
+					return RedirectToAction("PaymentResult", new { success = false, message = "訂單不存在" });
+				}
+
+				// 確認付款
+				var linePayService = new LinePayService();
+				var confirmDTO = new PaymentConfirmDTO
+				{
+					Amount = Convert.ToInt32(order.FTotalAmount ?? 0),
+					Currency = "TWD"
+				};
+
+				var confirmResponse = await linePayService.ConfirmPayment(transactionId, orderId, confirmDTO);
+
+				if (confirmResponse.ReturnCode == "0000")
+				{
+					// 更新訂單狀態為已付款
+					order.FStatus = "已付款";
+					await _context.SaveChangesAsync();
+
+					return RedirectToAction("PaymentResult", new 
+					{ 
+						success = true, 
+						orderId = orderId, 
+						transactionId = transactionId,
+						amount = order.FTotalAmount 
+					});
+				}
+				else
+				{
+					return RedirectToAction("PaymentResult", new 
+					{ 
+						success = false, 
+						message = "付款確認失敗：" + confirmResponse.ReturnMessage 
+					});
+				}
+			}
+			catch (Exception ex)
+			{
+				return RedirectToAction("PaymentResult", new 
+				{ 
+					success = false, 
+					message = "付款處理錯誤：" + ex.Message 
+				});
+			}
+		}
+
+		// LINE Pay 取消付款回調
+		[HttpGet]
+		public IActionResult LinePayCancel(string transactionId, string orderId)
+		{
+			return RedirectToAction("PaymentResult", new 
+			{ 
+				success = false, 
+				message = "付款已取消", 
+				orderId = orderId 
+			});
+		}
+
+		// 付款結果頁面
+		[HttpGet]
+		public IActionResult PaymentResult(bool success, string orderId = "", string transactionId = "", decimal? amount = null, string message = "")
+		{
+			ViewBag.Success = success;
+			ViewBag.OrderId = orderId;
+			ViewBag.TransactionId = transactionId;
+			ViewBag.Amount = amount;
+			ViewBag.Message = message;
+			return View();
+		}
 
 	}
 }
