@@ -1,0 +1,132 @@
+@{
+    ViewData["Title"] = "付款結果";
+    bool success = ViewBag.Success ?? false;
+    string orderId = ViewBag.OrderId ?? "";
+    string transactionId = ViewBag.TransactionId ?? "";
+    decimal? amount = ViewBag.Amount;
+    string message = ViewBag.Message ?? "";
+}
+
+<div class="colorlib-product">
+    <div class="container">
+        <div class="row row-pb-lg">
+            <div class="col-md-10 offset-md-1">
+                <div class="process-wrap">
+                    <div class="process text-center">
+                        <p><span>01</span></p>
+                        <h3>購物車</h3>
+                    </div>
+                    <div class="process text-center">
+                        <p><span>02</span></p>
+                        <h3>確認結帳</h3>
+                    </div>
+                    <div class="process text-center active">
+                        <p><span>03</span></p>
+                        <h3>訂單完成</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        @if (success)
+                        {
+                            <!-- 付款成功 -->
+                            <div class="mb-4">
+                                <i class="fas fa-check-circle text-success" style="font-size: 80px;"></i>
+                            </div>
+                            <h2 class="text-success mb-4">付款成功！</h2>
+                            
+                            <div class="payment-info text-left mx-auto" style="max-width: 500px;">
+                                <div class="row mb-3">
+                                    <div class="col-5 text-right font-weight-bold">訂單編號：</div>
+                                    <div class="col-7">@orderId</div>
+                                </div>
+                                @if (!string.IsNullOrEmpty(transactionId))
+                                {
+                                    <div class="row mb-3">
+                                        <div class="col-5 text-right font-weight-bold">交易代碼：</div>
+                                        <div class="col-7">@transactionId</div>
+                                    </div>
+                                }
+                                @if (amount.HasValue)
+                                {
+                                    <div class="row mb-3">
+                                        <div class="col-5 text-right font-weight-bold">付款金額：</div>
+                                        <div class="col-7 text-primary font-weight-bold">NT$ @amount.Value.ToString("N0")</div>
+                                    </div>
+                                }
+                                <div class="row mb-3">
+                                    <div class="col-5 text-right font-weight-bold">付款時間：</div>
+                                    <div class="col-7">@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")</div>
+                                </div>
+                            </div>
+
+                            <div class="mt-5">
+                                <a href="@Url.Action("Index", "Home")" class="btn btn-primary btn-lg mr-3">
+                                    <i class="fas fa-home"></i> 返回首頁
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- 付款失敗或取消 -->
+                            <div class="mb-4">
+                                <i class="fas fa-times-circle text-danger" style="font-size: 80px;"></i>
+                            </div>
+                            <h2 class="text-danger mb-4">付款失敗</h2>
+                            
+                            @if (!string.IsNullOrEmpty(message))
+                            {
+                                <div class="alert alert-danger mx-auto" style="max-width: 500px;">
+                                    <strong>失敗原因：</strong> @message
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrEmpty(orderId))
+                            {
+                                <div class="payment-info text-left mx-auto mb-4" style="max-width: 500px;">
+                                    <div class="row">
+                                        <div class="col-5 text-right font-weight-bold">訂單編號：</div>
+                                        <div class="col-7">@orderId</div>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="mt-4">
+                                @if (!string.IsNullOrEmpty(orderId))
+                                {
+                                    <a href="@Url.Action("CheckOut", "Home")" class="btn btn-warning btn-lg mr-3">
+                                        <i class="fas fa-redo"></i> 重新付款
+                                    </a>
+                                }
+                                <a href="@Url.Action("ShoppingCart", "Home")" class="btn btn-secondary btn-lg mr-3">
+                                    <i class="fas fa-shopping-cart"></i> 返回購物車
+                                </a>
+                                <a href="@Url.Action("Index", "Home")" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-home"></i> 返回首頁
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .payment-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .fas {
+            line-height: 1;
+        }
+    </style>
+}
